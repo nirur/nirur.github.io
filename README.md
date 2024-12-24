@@ -1,2 +1,0 @@
-
-# nirur's personal website

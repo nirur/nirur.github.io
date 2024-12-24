@@ -1,0 +1,177 @@
+:root {
+    --th-1-02: white;   /* bright white */
+    --th-1-00: ivory;   /* off-white */
+    --th-1-01: #2e86ab; /* linky blue */
+    --th-1-10: #dd403a; /* primary, bright */
+    --th-1-11: #bf211e; /* primary, dark */
+    --th-1-12: #f79256; /* primary, light */
+    --th-1-20: #697a21; /* secondary */
+    --th-1-30: #3e363f; /* tertiary, dark */
+    
+    --off-white:    var(--th-1-00);
+    --bright-white: var(--th-1-02);
+    --link:         var(--th-1-01);
+    --primary-dark: var(--th-1-10);
+    --primary:      var(--th-1-11);
+    --primary-soft: var(--th-1-12);
+    --secondary:    var(--th-1-20);
+    --tertiary:     var(--th-1-30);
+    
+    --top:  var(--primary);
+    --card: var(--secondary);
+}
+
+body {
+    font-family: "Source Code Pro", serif;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--off-white);
+}
+
+#top {
+    /*position: sticky;*/
+    padding: 2vh 2vw 2vh 2vw;
+    font-family: "Audiowide", serif;
+    background-color: var(--top);
+    color: var(--bright-white);
+}
+
+@media (width>1000px) {
+    #top {
+        font-size: 1vw;
+    }
+}
+
+@media (width<=1000px) {
+    #top {
+        font-size: 10px;
+    }
+}
+
+#lower {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+#left {
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 300px;
+    background-color: var(--primary);
+}
+
+.lbarbutton {
+    color: var(--bright-white);
+    display: inline-block;
+    padding: 5%;
+    width: -webkit-fill-available;
+    height: max-content;
+}
+
+.lbarbutton:hover {
+    background-color: var(--primary-dark);
+}
+
+#scrollbox {
+    flex: 1 5;
+    display: flex;
+    flex-flow: column;
+}
+
+#scrollbox > * {
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-bottom: 1%;
+}
+
+#content {
+    box-sizing: border-box;
+    width: 80%;
+    min-width: min(100%, 800px);
+}
+
+#content > * {
+    font-family: "Newsreader", serif;
+}
+
+#content > header {
+    font-family: "Playfair Display", serif;
+    text-decoration: underline var(--primary-soft) dotted;
+}
+
+footer {
+    color: var(--bright-white);
+    background-color: var(--tertiary);
+    flex-grow: 1;
+    padding-top: 1%;
+    margin-top: 1%;
+    font-family: "Source code Pro", sans-serif;
+}
+
+
+/* Cards for resume */
+
+.xp-card {
+    display: flex;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    border: 2px solid var(--card);
+    font-family: "Source Code Pro";
+}
+
+.xp-card > * {
+    padding: 16px;
+}
+
+.xp-tag {
+    flex-shrink: 0;
+    width: 20%;
+}
+
+.xp-tag > span {
+    display: block;
+    margin-bottom: 1em;
+}
+
+.xp-tag-main {
+    font-weight: bold;
+}
+
+.xp-tag-role {
+    font-style: italic;
+}
+
+.xp-descr {
+    width: 80%;
+    background-color: var(--card);
+    color: var(--bright-white);
+}
+
+.xp-descr > ul {
+    margin: 0;
+    list-style-type: "\FF0A  ";
+}
+
+
+/* Links */
+
+a {
+    text-decoration: underline;
+}
+
+a:link, a:visited, a:hover {
+    color: var(--link);
+}
+
+a:focus, a:active {
+    color: var(--primary-soft);
+}
+
+.center {
+    text-align: center;
+}
+
