@@ -6,7 +6,7 @@ site: Niranjan Rao
 <html>
     <head>
         <meta charset="utf-8">
-        <title>{{ page.site }} | {{ page.title }}</title>
+        <title>Niranjan Rao | {{ page.title }}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link
@@ -20,18 +20,52 @@ site: Niranjan Rao
         rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="assets/css/cool.css">
+        <script>
+            function generateJumpNav() {
+                var thisNav = document.getElementById("jspopulate");
+                var i = 1;
+                for (var sec of document.getElementsByTagName("h2")) {
+                    var setid = "sect"+i;
+                    sec.setAttribute("id", setid);
+                    
+                    var link = document.createElement("a");
+                    var span = document.createElement("span");
+                    span.setAttribute("class", "lbarbutton");
+                    link.setAttribute("href", "#"+setid);
+                    span.textContent = sec.textContent;
+                    
+                    link.appendChild(span);
+                    thisNav.appendChild(link);
+                    i++;
+                }
+                if (i>1) {
+                    var hidden = document.getElementById("secondary");
+                    hidden.setAttribute("style",
+                        "display: flex");
+                }
+            }
+            
+            window.onload = generateJumpNav;
+        </script>
     </head>
     <body>
         <div id="top">
             <span>niranjan rao</span>
         </div>
         <div id="lower">
-            <div id="left">
-                <a href="/"><span class="lbarbutton">Home</span></a>
-                <a href="/resume"><span class="lbarbutton">Resume/CV</span></a>
-                <a href="/projects"><span class="lbarbutton">Projects</span></a>
-                <a href="/pictures"><span class="lbarbutton">Pictures</span></a>
-                <a href="/blog"><span class="lbarbutton">Informal</span></a>
+            <div class="flex-contain" id="primary">
+                <nav>
+                        <a href="/"><span class="lbarbutton">Home</span></a>
+                        <a href="/resume"><span class="lbarbutton">Resume/CV</span></a>
+                        <a href="/projects"><span class="lbarbutton">Projects</span></a>
+                        <a href="/pictures"><span class="lbarbutton">Pictures</span></a>
+                        <a href="/blog"><span class="lbarbutton">Informal</span></a>
+                </nav>
+            </div>
+            <div class="flex-contain" id="secondary">
+                <nav id="jspopulate">
+                        <span class="lbarhead">JUMP TO SECTION</span>
+                </nav>
             </div>
             <div id="scrollbox">
                 <div id="content">
@@ -43,6 +77,11 @@ site: Niranjan Rao
                     </p>
                     <p>
                         All rights reserved. I represent my own opinions only.
+                    </p>
+                    <p>
+                        Here's the
+                        <a href="https://github.com/nirur/nirur.github.io">
+                            GitHub repo</a> for this website.
                     </p>
                 </footer>
             </div>
