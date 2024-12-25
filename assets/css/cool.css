@@ -110,7 +110,7 @@ body {
     font-family: "Newsreader", serif;
 }
 
-#content > header {
+header {
     font-family: "Playfair Display", serif;
     text-decoration: underline var(--primary-soft) dotted;
 }
@@ -170,7 +170,20 @@ footer {
 }
 
 
-/* Links */
+/* Miscellany */
+
+
+.sect {
+    margin-bottom: 4em;
+}
+
+.widesect {
+    margin-bottom: 8em;
+}
+
+.widesect:last-child, .sect:last-child {
+    margin-bottom: 0;
+}
 
 a {
     text-decoration: underline;
