@@ -2,3 +2,19 @@
 layout: default
 title: Blog
 ---
+<header>
+    <h1>Posts.</h1>
+</header>
+{% for post in site.posts %}
+<a class="xp-card" href="{{ post.url }}">
+    <div class="xp-tag">
+        <span class="xp-tag-main">{{ post.title }}</span>
+        <hr>
+        <span class="xp-tag-time">Spring 2024</span>
+    </div>
+    <div class="xp-descr">
+        {{ post.excerpt }}
+    </div>
+</a>
+    <a ></a>
+{% endfor %}
