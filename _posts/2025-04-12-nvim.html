@@ -1,0 +1,79 @@
+---
+layout: post
+title: "Was NVim Worth It?"
+date:   2025-4-12 20:00:00 -0800
+categories: math
+---
+<p>
+Let me tell you about Neovim, the way it was presented to me.
+</p>
+
+<p>
+Neovim: a modernization of the well-loved Vim. Neovim: a powerful, customizable
+editor. Neovim: a necessary addition to anyone's workflow who's seeking to
+upgrade their productivity. Neovim: the way.
+</p>
+
+<p>
+So now you've installed Neovim (you built it from the source for the bleeding
+edge of functionality) and can't manage to quit the program. Typing
+<code>exit</code> doesn't work, so you smash the keyboard and close the window.
+</p>
+
+<p>
+Your training arc begins. Soon, getting comfortable with the keybindings, you
+spew out code while your mouse lays in a far-flung corner of your desk. You've
+now risen to meet the challenge: customization.
+</p>
+
+<p>
+***
+</p>
+
+<p>
+Many would argue customization brings out the true power in (N)Vim. I would
+argue the same. The first, and in my opinion most important, extension regards
+LSPs: Langauge Server Protocols.
+</p>
+
+<p>
+When VS Code was developing its editor, it ran into the same issue holding back
+other small editors' potential: it needed to add syntax support for a vast
+array of languages before it could gain widespread acceptance. Sure, they could
+go the route of "one language at a time," but this doesn't avoid the eventual
+need for extensive development.
+</p>
+
+<p>
+They brought about LSPs: a way to diffuse production costs among a wide array
+of collaborators while allowing smaller editors to enter the picture. Creating
+a standard interface protocol, they allowed others to code up "language
+servers." These servers could then be used with any editor, incentivizing a
+community effort to build up these LSPs. Of course, this means NVim now has
+language support too.
+</p>
+
+<p>
+The second significant feature are snippets. These are essentially keybindings
+and abbreviations for otherwise long and redundant pieces of text or code. They
+integrate well with LSPs: for the most part, LSPs themselves provide a default
+set of snippets. Now, what used to be 3 lines is reduced to 4 characters.
+</p>
+
+<p>
+So, I came all this way for some snippets and LSPs. Was it truly worth it?
+</p>
+
+<p>
+For LaTeX, my answer is a resounding "yes"; for things like Markdown files, not
+so much. LaTeX is known for its "clunkiness" so to speak: it's difficult to hit
+the backslash characters which litter the text, and using less-worn characters
+strains one's hands. Snippets have shaved off at least two hours worth of work
+here. By contrast, Markdown is essentially English: there isn't much fancy work
+to be done.
+</p>
+
+<p>
+Thus, I'd argue that anybody working in code should at least give it a try;
+outside of this, there may not be much scope for practicality.
+</p>
