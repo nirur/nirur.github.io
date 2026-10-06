@@ -20,7 +20,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/assets/css/cool.css">
         <script>
-            function generateJumpNav() {
+            window.onload = () => {
                 var thisNav = document.getElementById("jspopulate");
                 var i = 1;
                 for (var sec of document.getElementsByTagName("h2")) {
@@ -39,12 +39,9 @@
                 }
                 if (i>1) {
                     var hidden = document.getElementById("secondary");
-                    hidden.setAttribute("style",
-                        "display: flex");
+                    hidden.style.display = 'flex';
                 }
             }
-            
-            window.onload = generateJumpNav;
         </script>
     </head>
     <body>
@@ -57,6 +54,7 @@
                         <a href="/"><span class="lbarbutton">Home</span></a>
                         <a href="/blog"><span class="lbarbutton">WOT</span></a>
                         <a href="/pictures"><span class="lbarbutton">Pictures</span></a>
+                        <a href="/news"><span class="lbarbutton">News</span></a>
                 </nav>
             </div>
             <div class="flex-contain" id="secondary">
