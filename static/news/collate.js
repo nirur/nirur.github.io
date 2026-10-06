@@ -1,5 +1,5 @@
 openview = (pg => { window.location = location.origin + location.pathname + '?page=' + pg; })
-var page;
+var rpage, page;
 {
     args = location.search
         .substring(1)
@@ -8,6 +8,7 @@ var page;
         .reduce(((r, v) => ({ [v[0]]: v[1], ...r })), {});
     if (args.page == undefined)
         openview('main');
+    rpage = args.page;
     page = views[args.page];
 }
 
@@ -46,20 +47,20 @@ function petty_elm(elm, sc) {
     if (elm.img) {
         var typ;
         if (elm.imgt?.startsWith('audio')) {
-            typ = 'audio controls'
+            typ = 'audio controls';
         } else {
             typ = 'img';
         }
-        media = `<${typ} src=${elm.img} />`
+        media = `<${typ} src=${elm.img}></${typ}>`;
     }
-    return `
+    return [`
 <div class='card' style='background-color: ${sc.color}' onclick='window.open("${elm.piecel}")'>
     <h1>${elm.piece}</h1>
  ` + media + `
     <p>${elm.pieced}</p>
-    <p>${pdt}</p>
+    <p>${pdt}</p>`, `
     <p>${sc.name}</p>
-</div>`
+</div>`]
 }
 function petty_nav(vnm, bk) {
     return `
@@ -117,12 +118,22 @@ async function coll_feed(feed) {
     );
     ls.sort().reverse();
     ls = ls.map(v => v[1]);
-    //ls = [...new Set(ls)];
-    ls = ls.join('');
+
+    var st = new Set();
+    ls_red = []
+    ls.forEach(v => {
+        if (!st.has(v[0])) {
+            st.add(v[0])
+            ls_red.push(v[0] + v[1]);
+        } else {
+            console.log('removing:');
+            console.log(v[0] + v[1]);
+        }
+    });
     return `
 <div class='feed'>
     <center><h2 class="feedttl">${feed.title}</h2></center>
-` + ls + `
+` + ls_red.join('') + `
 </div>
 `
 }
@@ -160,7 +171,7 @@ async function load(view) {
 
     tba.innerHTML += `<nav id='chv'>`
         + Object.keys(views)
-            .map(key => petty_nav(key, key == page))
+            .map(key => petty_nav(key, key == rpage))
             .join('')
         + `</nav>`;
     tba.innerHTML += await collect(view);
@@ -171,7 +182,7 @@ async function load(view) {
         ind++;
     }
 
-    chop(view.mxlen);
+    //chop(view.mxlen);
 }
 window.onload = (() => {
     load(page);

@@ -279,12 +279,16 @@ const views = {
             sources.nyt.us,
             sources.wsj.health,
             sources.hill.news,
+            sources.csp.wtd,
         ]),
         new Feed('science', [
             sources.pubmed.jnls,
             sources.sciam.all,
             sources.sciam.news,
-            sources.nyt.space,
+            sources.physorg.phys,
+            sources.physorg.space,
+            sources.nasa.iotd,
+            //sources.nyt.space,
         ]),
     ]),
     fin: new View('Financials', [
@@ -325,7 +329,7 @@ const views = {
             sources.csp.wtd,
             sources.csp.csf,
             sources.hill.news,
-            //sources.hill.biz,
+            sources.hill.biz,
         ]),
         new Feed('right lean', [
             sources.wsj.markets,
@@ -347,16 +351,16 @@ const views = {
             sources.sciam.basic,
             //sources.nyt.space,
             sources.nasa.iotd,
-        ]),
-        new Feed('research & niche', [
-            sources.pubmed.jnls,
-            sources.tt.all,
             sources.physorg.nano,
             sources.physorg.phys,
             sources.physorg.space,
             sources.physorg.chem,
             sources.physorg.bio,
             sources.physorg.math,
+        ]),
+        new Feed('research & niche', [
+            sources.pubmed.jnls,
+            sources.tt.all,
         ]),
     ]),
     cul: new View('Culture', [
