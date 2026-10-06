@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&display=swap');
+
+body {
+    font-family: "Newsreader", "Times New Roman";
+}
+
+#chv {
+    display: flex;
+    flex-direction: row;
+    border-width: 0;
+    border-bottom-width: 4px;
+    border-top-width: 4px;
+    border-color: black;
+    border-style: double none double none;
+}
+
+.vw {
+    flex: 1;
+    font-family: "Courier Prime", "Menlo";
+}
+
+.vw:hover, #vws {
+    background-color: dimgray;
+    color: white;
+}
+
+.vw:hover {
+    text-decoration: underline;
+}
+
+#content {
+    flex: 3;
+    display: flex;
+    flex-direction: row;
+    margin: 0px 108px;
+    overflow: scroll;
+}
+
+.feed {
+    margin: 4px;
+}
+
+.feedttl {
+    font-family: "Bodoni Moda", "Georgia";
+    font-style: italic;
+}
+
+.card {
+    margin: 8px;
+    padding: 16px;
+    font-size: small;
+    border-radius: 4px;
+}
+
+.card:hover, .card:hover * {
+    background-color: dimgray !important;
+    color: snow !important;
+}
+
+#content img {
+    width: 90%;
+    margin: 5%;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+.card_series a:hover {
+    text-decoration: underline;
+}
