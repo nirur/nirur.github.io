@@ -60,7 +60,7 @@ img {
     width: 100%;
 }
 
-h1 {
+header h1 {
     font-family: "Playfair Display", "Newsreader", "Georgia", serif;
     text-decoration: var(--primary) underline dotted;
 }
