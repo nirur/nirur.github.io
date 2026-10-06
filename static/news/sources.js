@@ -342,7 +342,7 @@ const views = {
             sources.wsj.econ,
             sources.wsj.usn,
         ]),
-    ]),
+    ], [2, 1, 2]),
     sci: new View('Science', [
         new Feed('mainstream', [
             sources.sciam.all,
