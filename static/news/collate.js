@@ -85,11 +85,16 @@ function info(el) {
 }
 
 async function coll_source(sc) {
-    var res = await corsfix.fetch(sc.url, {
-        //method: 'POST',
-        //body: sc.url,
-        cache: 'no-cache',
-    });
+    var res;
+    try {
+        res = await fetch('https://cloudflare-cors-anywhere.a91-b83.workers.dev/?' + sc.url, {
+            //method: 'POST',
+            //body: sc.url,
+            cache: 'no-cache',
+        });
+    } catch (e) {
+        return [];
+    }
     res = await res.text();
     res = parse(res);
     res = res.querySelectorAll('item, entry')
@@ -125,7 +130,7 @@ async function collect(view) {
     var ls = view.feeds.map(coll_feed);
     ls = await Promise.all(ls);
     return `
-<div id='content'>
+<div id='view'>
 ` + ls.join('') + `
 </div>
 `
@@ -151,17 +156,17 @@ async function chop(l) {
 }
 
 async function load(view) {
-    const body = document.querySelector('body');
+    const tba = document.querySelector('#content');
 
-    body.innerHTML = `<nav id='chv'>`
+    tba.innerHTML += `<nav id='chv'>`
         + Object.keys(views)
             .map(key => petty_nav(key, key == page))
             .join('')
         + `</nav>`;
-    body.innerHTML += await collect(view);
+    tba.innerHTML += await collect(view);
 
     var ind = 0
-    for (fd of body.querySelectorAll('.feed')) {
+    for (fd of tba.querySelectorAll('.feed')) {
         fd.style.flex = view.bkd[ind];
         ind++;
     }

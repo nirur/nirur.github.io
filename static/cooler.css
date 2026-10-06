@@ -42,13 +42,17 @@ body {
     height: 100vh;
 }
 
-a {
+a, a:visited, a:hover {
     text-decoration: none;
     color: var(--link);
 }
 
 a:hover {
     text-decoration: underline;
+}
+
+a:focus, a:active {
+    color: var(--primary-soft);
 }
 
 img {
@@ -73,12 +77,12 @@ img {
 #main > * {
     padding: 16px;
     margin: 0;
-    padding-right: max(16px, 100% - 32px - 600px);
 }
 
 
 #content {
     background-color: var(--off-white);
+    padding-right: max(16px, 100% - 32px - 600px);
 }
 
 footer {

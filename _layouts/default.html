@@ -1,86 +1,51 @@
 ---
 ---
 <!DOCTYPE html>
-
 <html>
     <head>
         <meta charset="utf-8">
         <title>{{ page.title }} | some cool website name</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link
-        href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
-        rel="stylesheet">
-        <link
-        href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800"
-        rel="stylesheet">
-        <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900"
-        rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="/assets/cool.css">
+        <link rel="stylesheet" href="/static/cooler.css">
         <script>
-            window.onload = () => {
-                var thisNav = document.getElementById("jspopulate");
+            window.onload = (() => {
+                var main = document.querySelector("div.navy#hd > nav");
                 var i = 1;
-                for (var sec of document.getElementsByTagName("h2")) {
+                for (var sec of document.querySelectorAll("h2")) {
                     var setid = "sect"+i;
-                    sec.setAttribute("id", setid);
-                    
+                    sec.id = setid;
                     var link = document.createElement("a");
-                    var span = document.createElement("span");
-                    span.setAttribute("class", "lbarbutton");
-                    link.setAttribute("href", "#"+setid);
-                    span.textContent = sec.textContent;
-                    
-                    link.appendChild(span);
-                    thisNav.appendChild(link);
+                    link.href = "#"+setid;
+                    link.textContent = sec.textContent;
+                    main.appendChild(link);
                     i++;
                 }
-                if (i>1) {
-                    var hidden = document.getElementById("secondary");
-                    hidden.style.display = 'flex';
-                }
-            }
+                if (i>1)
+                    main.hidden = false;
+            });
         </script>
     </head>
-    <body>
-        <div id="top">
-            <span>niranjan</span>
+    <body style="display: flex; flex-direction: row;">
+        <nav class="navy" style="display: flex; flex-direction: column;" id="mn">
+            <a href="/" class="barbtn_m">Home</a>
+            <a href="/blog" class="barbtn_m">WOT</a>
+            <a href="/pictures" class="barbtn_m">Pictures</a>
+            <a href="/news" class="barbtn_m">News</a>
+        </nav>
+        <div class="navy" id="hd" hidden>
+            <span>JUMP TO</span>
+            <nav></nav>
         </div>
-        <div id="lower">
-            <div class="flex-contain" id="primary">
-                <nav>
-                        <a href="/"><span class="lbarbutton">Home</span></a>
-                        <a href="/blog"><span class="lbarbutton">WOT</span></a>
-                        <a href="/pictures"><span class="lbarbutton">Pictures</span></a>
-                        <a href="/news"><span class="lbarbutton">News</span></a>
-                </nav>
+        <div id="main" style="flex: 1; overflow-y: auto; display: flex;
+            flex-direction: column;">
+            <div id="content">
+                {{ content }}
             </div>
-            <div class="flex-contain" id="secondary">
-                <nav id="jspopulate">
-                        <span class="lbarhead">JUMP TO SECTION</span>
-                </nav>
-            </div>
-            <div id="scrollbox">
-                <div id="content">
-                    {{ content }}
-                </div>
-                <footer>
-                    <p>
-                        You can contact me at niranjanrao049[at]gmail[dot]com.
-                    </p>
-                    <p>
-                        I represent my own opinions only.
-                    </p>
-                    <p>
-                        Here's the
-                        <a href="https://github.com/nirur/nirur.github.io">
-                            GitHub repo</a> for this website. It's Apache-2.0
-                        licensed.
-                    </p>
-                </footer>
-            </div>
+            <footer style="flex: 1;">
+                Contact: niranjanrao049[at]gmail[dot]com. I represent
+                my own opinions only.
+                <a href="https://github.com/nirur/nirur.github.io"> GitHub
+                repo</a> for this website.
+            </footer>
         </div>
     </body>
 </html>
