@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+:root {
+    --th-1-02: white;   /* bright white */
+    --th-1-00: ivory;   /* off-white */
+    --th-1-01: #2e86ab; /* linky blue */
+    --th-1-10: #dd403a; /* primary, bright */
+    --th-1-11: #bf211e; /* primary, dark */
+    --th-1-12: #f79256; /* primary, light */
+    --th-1-20: #697a21; /* secondary (green) */
+    --th-1-30: #3e363f; /* tertiary (navy), dark */
+    
+    --off-white:    var(--th-1-00);
+    --bright-white: var(--th-1-02);
+    --link:         var(--th-1-01);
+    --primary-dark: var(--th-1-11);
+    --primary:      var(--th-1-10);
+    --primary-soft: var(--th-1-12);
+    --secondary:    var(--th-1-20);
+    --tertiary:     var(--th-1-30);
+    
+    --top:  var(--primary);
+    --card: var(--secondary);
+}
+/*
+ * Available fonts:
+ * Source Code Pro (sans serif)
+ * Audiowide (ugly)
+ * Newsreader (most text)
+ * Playfair Display (headers)
+ */
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: var(--link);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    width: 100%;
+}
+
+.navy a:hover {
+    background-color: var(--primary);
+}
+
+.navy {
+    background-color: var(--primary-dark);
+    font-family: "Source Code Pro", serif;
+    font-size: larger;
+}
+
+.navy * {
+    color: var(--bright-white);
+    padding: 16px;
+}
+
+#main > * {
+    padding: 16px;
+    margin: 0;
+    padding-right: max(16px, 100% - 32px - 600px);
+}
+
+
+#content {
+    background-color: var(--off-white);
+}
+
+footer {
+    font-family: "Source Code Pro", serif;
+    font-style: italic;
+    background-color: var(--tertiary);
+    color: var(--bright-white);
+}
+

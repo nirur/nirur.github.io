@@ -1,0 +1,51 @@
+---
+---
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{{ page.title }} | some cool website name</title>
+        <link rel="stylesheet" href="/static/cooler.css">
+        <script>
+            window.onload = (() => {
+                var main = document.querySelector("div.navy#hd > nav");
+                var i = 1;
+                for (var sec of document.querySelectorAll("h2")) {
+                    var setid = "sect"+i;
+                    sec.id = setid;
+                    var link = document.createElement("a");
+                    link.href = "#"+setid;
+                    link.textContent = sec.textContent;
+                    main.appendChild(link);
+                    i++;
+                }
+                if (i>1)
+                    main.hidden = false;
+            });
+        </script>
+    </head>
+    <body style="display: flex; flex-direction: row;">
+        <nav class="navy" style="display: flex; flex-direction: column;" id="mn">
+            <a href="/" class="barbtn_m">Home</a>
+            <a href="/blog" class="barbtn_m">WOT</a>
+            <a href="/pictures" class="barbtn_m">Pictures</a>
+            <a href="/news" class="barbtn_m">News</a>
+        </nav>
+        <div class="navy" id="hd" hidden>
+            <span>JUMP TO</span>
+            <nav></nav>
+        </div>
+        <div id="main" style="flex: 1; overflow-y: auto; display: flex;
+            flex-direction: column;">
+            <div id="content">
+                {{ content }}
+            </div>
+            <footer style="flex: 1;">
+                Contact: niranjanrao049[at]gmail[dot]com. I represent
+                my own opinions only.
+                <a href="https://github.com/nirur/nirur.github.io"> GitHub
+                repo</a> for this website.
+            </footer>
+        </div>
+    </body>
+</html>
