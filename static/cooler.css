@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap');
 
-/*@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&display=swap');
@@ -40,6 +40,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
+    font-family: "Newsreader", "Georgia", serif;
 }
 
 a, a:visited, a:hover {
@@ -57,6 +58,11 @@ a:focus, a:active {
 
 img {
     width: 100%;
+}
+
+h1 {
+    font-family: "Playfair Display", "Newsreader", "Georgia", serif;
+    text-decoration: var(--primary) underline dotted;
 }
 
 .navy a:hover {
