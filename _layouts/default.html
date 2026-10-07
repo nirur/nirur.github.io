@@ -27,14 +27,14 @@
         </script>
         <script>
             function flip() {
-                document.querySelectorAll(".navy > *:not(#hamb)")
+                document.querySelectorAll(".navy > *:not(.hamb)")
                     .forEach(v => v.classList.toggle('hide'));
             }
         </script>
     </head>
     <body style="display: flex">
         <nav class="navy" id="mn">
-            <span id="hamb" onclick="flip()">&#x2630;</span>
+            <span class="hamb" onclick="flip()">&#x2630;</span>
             <a href="/" class="hide">Home</a>
             <a href="/blog" class="hide">WOT</a>
             <a href="/pictures" class="hide">Pictures</a>

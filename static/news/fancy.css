@@ -10,12 +10,17 @@
     background-color: var(--off-white);
 }
 
-.vw {
+#nhamb:hover {
+    background-color: dimgray;
+    color: white;
+}
+
+#chv > * {
     flex: 1;
     font-family: "Courier Prime", "Menlo";
 }
 
-.vw:hover, #vws {
+#chv *:hover, #vws {
     background-color: dimgray;
     color: white;
 }

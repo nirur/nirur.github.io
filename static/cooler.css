@@ -81,7 +81,7 @@ header h1 {
     background-color: var(--primary-soft);
 }
 
-.navy a:hover, #hamb:hover {
+.navy a:hover, .hamb:hover {
     background-color: var(--primary);
 }
 
@@ -122,7 +122,7 @@ footer {
     body {
         flex-direction: row;
     }
-    #hamb {
+    .hamb {
         display: none;
     }
 }

@@ -66,7 +66,7 @@ function petty_elm(elm, sc) {
 }
 function petty_nav(name, sel, ttl) {
     return `
-<div class='vw'${sel ? ' id="vws"' : ''} onClick='openview("${name}")' >
+<div${sel ? ' id="vws"' : ''} class='hide' onClick='openview("${name}")' >
     <center>
         <h3>${ttl}</h3>
     </center>

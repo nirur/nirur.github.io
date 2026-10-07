@@ -7,8 +7,18 @@ title: News
 <script src="/static/news/sources.js"></script>
 <script src="/static/news/collate.js"></script>
 <link rel="stylesheet" href="/static/news/fancy.css" />
+<script>
+    function flipN() {
+        document.querySelectorAll("#chv > *:not(.hamb)")
+            .forEach(v => v.classList.toggle('hide'));
+    }
+</script>
 
-<nav id="chv"></nav>
+<nav id="chv">
+    <span id="#nhamb" class="hamb" onclick="flipN()">
+        <center><h3>&#x2630;</h3></center>
+    </span>
+</nav>
 
 <div id="about" hidden>
     <p>
