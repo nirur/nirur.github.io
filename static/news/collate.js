@@ -1,3 +1,5 @@
+const LIM = 40;
+
 openview = (pg => { window.location = location.origin + location.pathname + '?page=' + pg; })
 var rpage, page;
 {
@@ -6,10 +8,10 @@ var rpage, page;
         .split('&')
         .map(v => v.split('=', 2))
         .reduce(((r, v) => ({ [v[0]]: v[1], ...r })), {});
-    if (args.page == undefined)
-        openview('main');
     rpage = args.page;
-    page = views[args.page];
+    if (args.page == undefined
+        || (rpage != 'about' && !Object.keys(LAYS).includes(rpage)))
+        openview(Object.keys(LAYS)[0]);
 }
 
 var parse, parseh;
@@ -62,11 +64,11 @@ function petty_elm(elm, sc) {
     <p>${sc.name}</p>
 </div>`]
 }
-function petty_nav(vnm, bk) {
+function petty_nav(name, sel, ttl) {
     return `
-<div class='vw'${bk ? ' id="vws"' : ''} onClick='openview("${vnm}")' >
+<div class='vw'${sel ? ' id="vws"' : ''} onClick='openview("${name}")' >
     <center>
-        <h3>${views[vnm].title}</h3>
+        <h3>${ttl}</h3>
     </center>
 </div>`;
 }
@@ -85,23 +87,34 @@ function info(el) {
     }
 }
 
-async function coll_source(sc) {
-    var res;
+var CACHE = {};
+async function cached_fetch(url) {
+    if (CACHE[url] != undefined)
+        return cache[url];
     try {
-        res = await fetch('https://cloudflare-cors-anywhere.a91-b83.workers.dev/?' + sc.url, {
-            //method: 'POST',
-            //body: sc.url,
-            cache: 'no-cache',
-        });
+        CACHE[url] = await fetch(
+            'https://cloudflare-cors-anywhere.a91-b83.workers.dev/?' + url,
+            { cache: 'no-cache' },
+        );
     } catch (e) {
-        return [];
+        CACHE[url] = null;
     }
+    return CACHE[url];
+}
+
+async function coll_source(sc) {
+    var res = await cached_fetch(sc.url);
+    if (res == null)
+        return [];
     res = await res.text();
     res = parse(res);
     res = res.querySelectorAll('item, entry')
         .values()
         .map(info)
-        .filter(e => (e.piece != 'No records found'));
+        .filter(e => (
+            (e.piece != 'No records found')
+            && (!e.piece.startsWith('Alert Run Date'))
+        ));
     res = deiter(res);
     res = sc.postproc(res);
     res = res.map(e => [e.dt, petty_elm(e, sc)]);
@@ -117,35 +130,51 @@ async function coll_feed(feed) {
             .reduce((r, v) => [...r, v], [])
     );
     ls.sort().reverse();
+    ls = ls.slice(0, Math.min(ls.length, LIM));
     ls = ls.map(v => v[1]);
 
     var st = new Set();
-    ls_red = []
+    ls_red = [];
     ls.forEach(v => {
         if (!st.has(v[0])) {
-            st.add(v[0])
+            st.add(v[0]);
             ls_red.push(v[0] + v[1]);
-        } else {
-            console.log('removing:');
-            console.log(v[0] + v[1]);
         }
     });
-    return `
-<div class='feed'>
-    <center><h2 class="feedttl">${feed.title}</h2></center>
-` + ls_red.join('') + `
-</div>
-`
+    var fttl = '';
+    if (feed.title)
+        fttl = `<center><h2 class="feedttl">${feed.title}</h2></center>`;
+    return `<div class='feed'>` + fttl + ls_red.join('') + `</div>`;
 }
-async function collect(view) {
+async function coll_view(view, ns = []) {
     var ls = view.feeds.map(coll_feed);
+    var ret = elem('div');
+    ret.classList = 'view';
+    ns.forEach(n => ret.classList.add(`scrn${n}`));
     ls = await Promise.all(ls);
-    return `
-<div id='view'>
-` + ls.join('') + `
-</div>
-`
-};
+    ret.innerHTML = ls.join('');
+    ret.querySelectorAll('.feed').forEach((f, i) => {
+        f.style.flex = view.bkd[i];
+    });
+    return ret;
+}
+async function collect(lay) {
+    var views = lay.views;
+    var clss = [];
+    var i = 3;
+    for (var j in views) {
+        var ln = views[j].feeds.length;
+        var ls = [];
+        for (; i >= ln; i--)
+            ls.push(i);
+        clss.push(ls);
+    }
+
+    var vws = views.map((v, i) => coll_view(v, clss[i])); // wrong
+    vws = await Promise.all(vws);
+    vws = vws.map(v => v.outerHTML).join('')
+    return vws;
+}
 
 async function chop(l) {
     var imgs = document.querySelectorAll('img').values();
@@ -166,24 +195,22 @@ async function chop(l) {
     });
 }
 
-async function load(view) {
+async function load(lay) {
     const tba = document.querySelector('#content');
-
-    tba.innerHTML += `<nav id='chv'>`
-        + Object.keys(views)
-            .map(key => petty_nav(key, key == rpage))
-            .join('')
-        + `</nav>`;
-    tba.innerHTML += await collect(view);
-
-    var ind = 0
-    for (fd of tba.querySelectorAll('.feed')) {
-        fd.style.flex = view.bkd[ind];
-        ind++;
-    }
-
+    tba.innerHTML += await collect(lay);
     //chop(view.mxlen);
 }
 window.onload = (() => {
-    load(page);
+    document.querySelector('#chv').innerHTML +=
+        Object.keys(LAYS)
+            .map(key => petty_nav(key, key == rpage, LAYS[key].title))
+            .join('')
+        + petty_nav('about', rpage == 'about', 'About')
+        + `</nav>`;
+    if (rpage == 'about') {
+        document.querySelector('#about').hidden = false;
+    } else {
+        page = LAYS[args.page];
+        load(page);
+    }
 });

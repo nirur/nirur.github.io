@@ -1,11 +1,13 @@
 #chv {
     display: flex;
-    flex-direction: row;
     border-width: 0;
     border-bottom-width: 4px;
     border-top-width: 4px;
     border-color: black;
     border-style: double none double none;
+    position: sticky;
+    top: 8px;
+    background-color: var(--off-white);
 }
 
 .vw {
@@ -22,11 +24,45 @@
     text-decoration: underline;
 }
 
-#view {
-    flex: 3;
-    display: flex;
+.view {
     flex-direction: row;
-    margin: 0px 108px;
+}
+
+@media (width < 800px) {
+    .view:not(.scrn1) {
+        display: none;
+    }
+    .view.scrn1 {
+        display: flex;
+        margin: 0px 8px;
+    }
+    #chv {
+        flex-direction: column;
+    }
+}
+@media (width >= 800px) and (width < 1225px) {
+    .view:not(.scrn2) {
+        display: none;
+    }
+    .view.scrn2 {
+        display: flex;
+        margin: 0px 8px;
+    }
+    #chv {
+        flex-direction: row;
+    }
+}
+@media (width >= 1225px) {
+    .view:not(.scrn3) {
+        display: none;
+    }
+    .view.scrn3 {
+        display: flex;
+        margin: 0px 108px;
+    }
+    #chv {
+        flex-direction: row;
+    }
 }
 
 .feed {
@@ -41,7 +77,7 @@
 .card {
     margin: 8px;
     padding: 16px;
-    font-size: small;
+    font-size: smaller;
     border-radius: 4px;
 }
 
@@ -59,7 +95,8 @@
     margin: 5%;
 }
 
+/*
 #content a {
     color: black;
     text-decoration: none;
-}
+}*/

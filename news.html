@@ -3,7 +3,54 @@ layout: default
 title: News
 ---
 
-<link rel="stylesheet" href="/static/news/fancy.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.4.16/purify.min.js"></script>
 <script src="/static/news/sources.js"></script>
 <script src="/static/news/collate.js"></script>
+<link rel="stylesheet" href="/static/news/fancy.css" />
+
+<nav id="chv"></nav>
+
+<div id="about" hidden>
+    <p>
+    This is a news aggregator. The aggregator is hungry for RSS feeds, so let
+    me know if you encounter any.
+    </p>
+
+    <p>
+    Below are the SCCLD login pages for various news sites; you may find them
+    useful.
+    <p>
+
+    <ul>
+        <li>
+            <a href="https://login.rpa.sccl.org/login/NYT">
+                NY times.
+            </a>. There's a separate link for historic issues; this is via the
+            ProQuest database. (This lets you make RSS feeds, but for historic
+            issues I'm not sure RSS is very useful.)
+        </li>
+        <li>
+            <a href="http://rpa.sccl.org/login?url=https://search.proquest.com/wallstreetjournal">
+                Wall Street Journal.
+            </a> SCCLD also offers a ProQuest version, which lets you make
+            RSS feeds out of custom queries. Not sure how quickly the database
+            updates with breaking news, though. This might also get you access
+            to Market Watch, you should try it.
+        </li>
+        <li>
+            <a href="https://rpa.sccl.org/login?url=http://www.scientificamerican.com">
+                Scientific American.
+            </a> SciAm stopped working on this site for some reason; I'll see
+            what I can do.
+        </li>
+        <li>
+            <a href="https://rpa.sccl.org/login?url=https://search.ebscohost.com/login.aspx?authtype=ip,url,cpid&custid=scc&groupid=main&profile=ehost&defaultdb=a9h">
+                EBSCO.
+            </a> This is a database which gives you (slightly outdated) access
+            to Bloomberg (.com and Newsweek), Forbes, and the Atlantic. The
+            site is really finicky though (you need to fiddle around to find
+            the right databases; not all of the available ones are listed at
+            the top). Also, I haven't yet added The Atlantic to this feed.
+        </li>
+    </ul>
+</div>

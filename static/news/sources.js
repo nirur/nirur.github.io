@@ -13,11 +13,10 @@ class Feed {
     }
 }
 class View {
-    constructor(title, lst, bkd = null, mxlen = 5_000) {
-        this.title = title;
-        this.feeds = lst;
+    constructor(lst, bkd = null) {
         this.bkd = (bkd ? bkd : this.dfbkd(lst.length));
-        this.mxlen = mxlen;
+        //this.mxlen = mxlen;
+        this.feeds = lst;
     }
 
     dfbkd(l) {
@@ -26,22 +25,35 @@ class View {
         return Array(l).fill(1)
     }
 }
+class Layout {
+    constructor(title, lst) {
+        this.title = title;
+        var last = lst.length - 1;
+        if (lst[last].feeds.length > 1) {
+            var scs = lst[last].feeds.flatMap(feed => feed.sources);
+            scs = [...new Set(scs)];
+            lst.push(new View([new Feed(null, scs)]));
+        }
+        this.views = lst;
+    }
+}
 
 const colors = {
     white: 'white', // c-span, podcasts
-    blue: 'azure', // NYT, Economist, Atlantic
+    blue: 'azure', // Economist, Atlantic
+    dblue: 'paleturquoise', // NYT
     yellow: 'beige', // Hard sci
     red: 'mistyrose', // WSJ
     green: 'honeydew', // Bloomberg, MW, Forbes, Barron's (no RSS)
     purple: 'lavender', // Blog posts
     orange: 'oldlace', // Soft sci
+    violet: 'violet', // PBS, Politico
 }
 
 // A good place to start:
 // https://about.fb.com/wp-content/uploads/2016/05/rss-urls-1.pdf
 const sources = {
     wsj: {
-        // WSJ
         name: 'WSJ',
         url: (w => 'https://feeds.content.dowjones.io/public/rss/' + w),
         color: colors.red,
@@ -64,7 +76,6 @@ const sources = {
         }
     },
     mw: {
-        // Market Watch
         name: 'MarketWatch',
         url: (w => 'https://feeds.content.dowjones.io/public/rss/' + w),
         color: colors.green,
@@ -76,7 +87,6 @@ const sources = {
         }
     },
     nyt: {
-        // NYT
         name: 'NYT',
         url: (w => 'https://rss.nytimes.com/services/xml/rss/nyt/' + w + ".xml"),
         color: colors.blue,
@@ -103,7 +113,6 @@ const sources = {
         }
     },
     econ: {
-        // Economist
         name: 'The Economist',
         url: (w => 'https://economist.com/' + w + '/rss.xml'),
         color: colors.blue,
@@ -112,6 +121,26 @@ const sources = {
             biz: ['business', 'Business'],
             fx: ['free-exchange', 'Free exchange'],
             // many more Economist exist
+        }
+    },
+    pbs: {
+        name: 'PBS',
+        url: (w => 'https://www.pbs.org/newshour/feeds/rss/' + w),
+        color: colors.violet,
+        main: {
+            hdl: ['headlines', 'Headlines'],
+            pol: ['politics', 'Politics'],
+        }
+    },
+    politico: {
+        name: 'Politico',
+        url: (w => `https://rss.politico.com/${w}.xml`),
+        color: colors.violet,
+        main: {
+            cong: ['congress', 'Congress'],
+            def: ['defense', 'Defense'],
+            pol: ['politics-news', 'Politics'],
+            hth: ['healthcare', 'Healthcare'],
         }
     },
     yahoo: {
@@ -235,6 +264,7 @@ const sources = {
         }
     }
     // TODO: arXiv? AAAS? zbMATH is cloudflare blocked
+    // Politico, PBS
 };
 for (key in sources) {
     rep = {};
@@ -257,117 +287,150 @@ sources.nasa.iotd.postproc = limn(1);
 sources.wiki.home.postproc = last;
 sources.wiki.potd.postproc = last;
 
-const views = {
-    main: new View('Main', [
-        new Feed('markets', [
-            sources.wsj.markets,
-            sources.wsj.usbiz,
-            sources.nyt.econ,
-            sources.econ.econ,
-            sources.ebsco.forbes,
-            sources.ebsco.bloom,
-            sources.mw.rt,
-            sources.mw.brk,
-            sources.mw.urt,
+const LAYS = {
+    main: new Layout('Main', [
+        new View([
+            new Feed('markets', [
+                sources.wsj.markets,
+                sources.wsj.usbiz,
+                sources.nyt.econ,
+                sources.econ.econ,
+                sources.ebsco.forbes,
+                sources.ebsco.bloom,
+                sources.mw.rt,
+                sources.mw.brk,
+                sources.mw.urt,
+            ]),
+            new Feed('headlines', [
+                sources.wsj.pol,
+                sources.wsj.usn,
+                sources.wsj.opn,
+                sources.wsj.world,
+                sources.nyt.world,
+                sources.nyt.us,
+                sources.wsj.health,
+                sources.hill.news,
+                sources.csp.wtd,
+            ]),
+            new Feed('science', [
+                sources.pubmed.jnls,
+                sources.sciam.all,
+                sources.sciam.news,
+                sources.physorg.phys,
+                sources.physorg.space,
+                sources.nasa.iotd,
+                //sources.nyt.space,
+            ]),
         ]),
-        new Feed('headlines', [
-            sources.wsj.pol,
-            sources.wsj.usn,
-            sources.wsj.opn,
-            sources.wsj.world,
-            sources.nyt.world,
-            sources.nyt.us,
-            sources.wsj.health,
-            sources.hill.news,
-            sources.csp.wtd,
-        ]),
-        new Feed('science', [
-            sources.pubmed.jnls,
-            sources.sciam.all,
-            sources.sciam.news,
-            sources.physorg.phys,
-            sources.physorg.space,
-            sources.nasa.iotd,
-            //sources.nyt.space,
+        new View([
+            new Feed('politics', [
+                sources.wsj.pol,
+                sources.wsj.usn,
+                sources.wsj.opn,
+                sources.wsj.world,
+                sources.nyt.world,
+                sources.nyt.us,
+                sources.wsj.health,
+                sources.hill.news,
+                sources.csp.wtd,
+                sources.wsj.markets,
+                sources.wsj.usbiz,
+                sources.nyt.econ,
+                sources.econ.econ,
+            ]),
+            new Feed('science', [
+                sources.pubmed.jnls,
+                sources.sciam.all,
+                sources.sciam.news,
+                sources.physorg.phys,
+                sources.physorg.space,
+                sources.nasa.iotd,
+            ]),
+        ], bkd = [2, 1]),
+    ]),
+    fin: new Layout('Financials', [
+        new View([
+            new Feed('headlines & macro', [
+                sources.mw.brk,
+                sources.wsj.markets,
+                sources.wsj.econ,
+                sources.nyt.econ,
+                sources.econ.econ,
+                sources.barr.pod,
+            ]),
+            new Feed('tech & business', [
+                sources.wsj.usbiz,
+                sources.wsj.tech,
+                sources.wsj.health,
+                sources.econ.biz,
+                sources.nyt.tech,
+                sources.ebsco.forbes,
+                sources.ebsco.bloom,
+                sources.mw.rt,
+                sources.mw.urt,
+                sources.yahoo.fin,
+            ]),
         ]),
     ]),
-    fin: new View('Financials', [
-        new Feed('live updates & podcasts', [
-            sources.mw.rt,
-            sources.mw.urt,
-            sources.yahoo.fin,
-            sources.barr.pod,
-        ]),
-        new Feed('headlines & macro', [
-            sources.mw.brk,
-            sources.wsj.markets,
-            sources.wsj.econ,
-            sources.nyt.econ,
-            sources.econ.econ,
-        ]),
-        new Feed('tech & business', [
-            sources.wsj.usbiz,
-            sources.wsj.tech,
-            sources.econ.biz,
-            sources.nyt.tech,
-            sources.ebsco.forbes,
-            sources.ebsco.bloom,
-        ]),
-    ]),
-    pol: new View('Politics', [
-        new Feed('left lean', [
-            sources.econ.biz,
-            sources.econ.fx,
-            sources.nyt.world,
-            sources.nyt.us,
-            sources.nyt.econ,
-            sources.nyt.tech,
-            sources.nyt.sunopn,
-            sources.econ.econ,
-        ]),
-        new Feed('center', [
-            sources.csp.wtd,
-            sources.csp.csf,
-            sources.hill.news,
-            sources.hill.biz,
-        ]),
-        new Feed('right lean', [
-            sources.wsj.markets,
-            sources.wsj.opn,
-            sources.wsj.world,
-            sources.wsj.usbiz,
-            sources.wsj.tech,
-            sources.wsj.pol,
-            sources.wsj.health,
-            sources.wsj.econ,
-            sources.wsj.usn,
-        ]),
-    ], [2, 1, 2]),
-    sci: new View('Science', [
-        new Feed('mainstream', [
-            sources.sciam.all,
-            sources.sciam.news,
-            sources.sciam.space,
-            sources.sciam.basic,
-            //sources.nyt.space,
-            sources.nasa.iotd,
-            sources.physorg.nano,
-            sources.physorg.phys,
-            sources.physorg.space,
-            sources.physorg.chem,
-            sources.physorg.bio,
-            sources.physorg.math,
-        ]),
-        new Feed('research & niche', [
-            sources.pubmed.jnls,
-            sources.tt.all,
+    pol: new Layout('Politics', [
+        new View([
+            new Feed('left lean', [
+                sources.econ.biz,
+                sources.econ.fx,
+                sources.nyt.world,
+                sources.nyt.us,
+                sources.nyt.econ,
+                sources.nyt.tech,
+                sources.nyt.sunopn,
+                sources.econ.econ,
+                sources.politico.cong,
+                sources.politico.def,
+                sources.politico.pol,
+                sources.politico.hth,
+            ]),
+            new Feed('center & right', [
+                sources.wsj.markets,
+                sources.wsj.opn,
+                sources.wsj.world,
+                sources.wsj.usbiz,
+                sources.wsj.tech,
+                sources.wsj.pol,
+                sources.wsj.health,
+                sources.wsj.econ,
+                sources.wsj.usn,
+                sources.hill.news,
+                sources.hill.biz,
+                sources.csp.wtd,
+            ]),
         ]),
     ]),
-    cul: new View('Culture', [
-        /*new Feed('dailies', [
+    sci: new Layout('Science', [
+        new View([
+            new Feed('mainstream', [
+                sources.sciam.all,
+                sources.sciam.news,
+                sources.sciam.space,
+                sources.sciam.basic,
+                //sources.nyt.space,
+                sources.nasa.iotd,
+                sources.physorg.nano,
+                sources.physorg.phys,
+                sources.physorg.space,
+                sources.physorg.chem,
+                sources.physorg.bio,
+                sources.physorg.math,
+            ]),
+            new Feed('research & niche', [
+                sources.pubmed.jnls,
+                sources.tt.all,
+            ]),
+        ]),
+    ]),
+    /*cul: new View('Culture', [
+        new Feed('dailies', [
             sources.wiki.potd,
             sources.wiki.home,
-        ]),*/
+        ]), // comment out
         new Feed('sports', [
             sources.wsj.sports,
             sources.nyt.spt_bb,
@@ -386,5 +449,5 @@ const views = {
             sources.wsj.lifestyle,
             sources.nyt.art,
         ]),
-    ]),
+    ]),*/
 };

@@ -6,16 +6,12 @@ title: Wall of Text
     <h1>Wall of Text (WOT)</h1>
 </header>
 {% for post in site.posts %}
-<a class="xp-card" href="{{ post.url }}">
-    <div class="xp-tag">
-        <span class="xp-tag-main">{{ post.title }}</span>
-        <hr>
-        <span class="xp-tag-time">Spring 2024</span>
-        <!-- get rid of this bloat with cards --!>
-    </div>
-    <div class="xp-descr">
-        {{ post.excerpt }}
-    </div>
-</a>
-    <a ></a>
+<p>
+<em>
+    <a href="{{ post.url }}">
+        {{ post.title }}
+    </a>
+</em>
+{{ post.excerpt }}
+</p>
 {% endfor %}

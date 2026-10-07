@@ -4,18 +4,20 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, height=device-height">
         <title>{{ page.title }} | Niranjan</title>
         <link rel="stylesheet" href="/static/cooler.css">
         <script>
             window.onload = (() => {
-                var main = document.querySelector("div.navy#hd > nav");
+                var main = document.querySelector("nav.navy#hd");
                 var i = 1;
-                for (var sec of document.querySelectorAll("h2")) {
+                for (var sec of document.querySelectorAll("#content > h2")) {
                     var setid = "sect"+i;
                     sec.id = setid;
                     var link = document.createElement("a");
                     link.href = "#"+setid;
                     link.textContent = sec.textContent;
+                    link.classList = "hide";
                     main.appendChild(link);
                     i++;
                 }
@@ -23,20 +25,25 @@
                     main.hidden = false;
             });
         </script>
+        <script>
+            function flip() {
+                document.querySelectorAll(".navy > *:not(#hamb)")
+                    .forEach(v => v.classList.toggle('hide'));
+            }
+        </script>
     </head>
-    <body style="display: flex; flex-direction: row;">
-        <nav class="navy" style="display: flex; flex-direction: column;" id="mn">
-            <a href="/" class="barbtn_m">Home</a>
-            <a href="/blog" class="barbtn_m">WOT</a>
-            <a href="/pictures" class="barbtn_m">Pictures</a>
-            <a href="/news" class="barbtn_m">News</a>
+    <body style="display: flex">
+        <nav class="navy" id="mn">
+            <span id="hamb" onclick="flip()">&#x2630;</span>
+            <a href="/" class="hide">Home</a>
+            <a href="/blog" class="hide">WOT</a>
+            <a href="/pictures" class="hide">Pictures</a>
+            <a href="/news" class="hide">News</a>
         </nav>
-        <div class="navy" id="hd" hidden>
-            <span>JUMP TO</span>
-            <nav></nav>
-        </div>
-        <div id="main" style="flex: 1; overflow-y: auto; display: flex;
-            flex-direction: column;">
+        <nav class="navy" id="hd" hidden>
+            <span class="hide">JUMP TO</span>
+        </nav>
+        <div id="main" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column;">
             <div id="content">
                 {{ content }}
             </div>
