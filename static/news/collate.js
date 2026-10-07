@@ -127,7 +127,7 @@ async function coll_feed(feed) {
     ls = ls.filter(l => l.length > 0);
     ls = ls.flatMap(l =>
         l.entries()
-            .map(e => [e[1][0].getTime() - e[0] * 7_200_000, e[1][1]])
+            .map(e => [e[1][0].getTime() - e[0] * 7_200_000, e[1][1], e[1][2]])
             .reduce((r, v) => [...r, v], [])
     );
     ls.sort();
