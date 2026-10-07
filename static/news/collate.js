@@ -128,7 +128,8 @@ async function coll_feed(feed) {
     ls = ls.flatMap(l =>
         l.entries()
             .map(e => [e[1][0].getTime() - e[0] * 7_200_000, e[1][1], e[1][2]])
-            .reduce((r, v) => [...r, v], [])
+            .toArray()
+            //.reduce((r, v) => [...r, v], []) // iterator -> array
     );
     ls.sort();
 
@@ -140,10 +141,12 @@ async function coll_feed(feed) {
             ls_red.push(v[2]);
         }
     });
-
-    ls.reverse();
+    
+    /*ls.reverse();
     ls = ls.slice(0, Math.min(ls.length, LIM));
-    ls = ls.map(v => v[1]);
+    ls = ls.map(v => v[1]);*/
+    ls_red.reverse();
+    ls_red = ls_red.slice(0, Math.min(ls_red.length, LIM));
 
     var fttl = '';
     if (feed.title)
