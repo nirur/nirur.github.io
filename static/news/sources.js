@@ -290,7 +290,7 @@ sources.wiki.potd.postproc = last;
 const LAYS = {
     main: new Layout('Main', [
         new View([
-            new Feed('markets', [
+            new Feed('economy', [
                 sources.wsj.markets,
                 sources.wsj.usbiz,
                 sources.nyt.econ,
@@ -323,7 +323,7 @@ const LAYS = {
             ]),
         ]),
         new View([
-            new Feed('politics', [
+            new Feed('in the news', [
                 sources.wsj.pol,
                 sources.wsj.usn,
                 sources.wsj.opn,
@@ -337,6 +337,11 @@ const LAYS = {
                 sources.wsj.usbiz,
                 sources.nyt.econ,
                 sources.econ.econ,
+                sources.ebsco.forbes,
+                sources.ebsco.bloom,
+                sources.mw.rt,
+                sources.mw.brk,
+                sources.mw.urt,
             ]),
             new Feed('science', [
                 sources.pubmed.jnls,
@@ -382,7 +387,6 @@ const LAYS = {
                 sources.nyt.econ,
                 sources.nyt.tech,
                 sources.nyt.sunopn,
-                sources.econ.econ,
                 sources.politico.cong,
                 sources.politico.def,
                 sources.politico.pol,
