@@ -97,6 +97,7 @@ const sources = {
             tech: ['Technology'],
             space: ['Space'],
             sunopn: ['sunday-review', 'Sunday review'],
+            hth: ['Health'],
             art: ['Arts'],
             style: ['FashionandStyle', 'Fashion & Style'],
             // `Sports` is not updated properly, so one must do it manually.
@@ -262,7 +263,15 @@ const sources = {
             p_tra: ['transportation', 'Transportation'],
             p_intl: ['international', 'International'],
         }
-    }
+    },
+    onion: {
+        name: "The Onion",
+        url: (w => w),
+        color: colors.purple,
+        main: {
+            all: ['https://theonion.com/feed/', null],
+        }
+    },
     // TODO: arXiv? AAAS? zbMATH is cloudflare blocked
     // Politico, PBS
 };
@@ -311,6 +320,7 @@ const LAYS = {
                 sources.wsj.health,
                 sources.hill.news,
                 sources.csp.wtd,
+                sources.onion.all,
             ]),
             new Feed('science', [
                 sources.pubmed.jnls,
@@ -342,6 +352,7 @@ const LAYS = {
                 sources.mw.rt,
                 sources.mw.brk,
                 sources.mw.urt,
+                sources.onion.all,
             ]),
             new Feed('science', [
                 sources.pubmed.jnls,
@@ -384,23 +395,19 @@ const LAYS = {
                 sources.econ.fx,
                 sources.nyt.world,
                 sources.nyt.us,
-                sources.nyt.econ,
-                sources.nyt.tech,
                 sources.nyt.sunopn,
+                sources.nyt.hth,
                 sources.politico.cong,
                 sources.politico.def,
                 sources.politico.pol,
                 sources.politico.hth,
             ]),
             new Feed('center & right', [
-                sources.wsj.markets,
                 sources.wsj.opn,
                 sources.wsj.world,
                 sources.wsj.usbiz,
-                sources.wsj.tech,
                 sources.wsj.pol,
                 sources.wsj.health,
-                sources.wsj.econ,
                 sources.wsj.usn,
                 sources.hill.news,
                 sources.hill.biz,
