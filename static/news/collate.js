@@ -55,14 +55,14 @@ function petty_elm(elm, sc) {
         }
         media = `<${typ} src=${elm.img}></${typ}>`;
     }
-    return [`
+    return `
 <div class='card' style='background-color: ${sc.color}' onclick='window.open("${elm.piecel}")'>
     <h1>${elm.piece}</h1>
  ` + media + `
     <p>${elm.pieced}</p>
-    <p>${pdt}</p>`, `
+    <p>${pdt}</p>
     <p>${sc.name}</p>
-</div>`]
+</div>`;
 }
 function petty_nav(name, sel, ttl) {
     return `
@@ -84,6 +84,7 @@ function info(el) {
         img: imgp?.getAttribute('url'),
         imgt: imgp?.getAttribute('type'),
         dt: new Date(get(el, 'pubDate, updated')),
+        guid: get(el, 'guid'),
     }
 }
 
@@ -117,7 +118,7 @@ async function coll_source(sc) {
         ));
     res = deiter(res);
     res = sc.postproc(res);
-    res = res.map(e => [e.dt, petty_elm(e, sc)]);
+    res = res.map(e => [e.dt, e.guid, petty_elm(e, sc)]);
     return res;
 }
 async function coll_feed(feed) {
@@ -129,18 +130,21 @@ async function coll_feed(feed) {
             .map(e => [e[1][0].getTime() - e[0] * 7_200_000, e[1][1]])
             .reduce((r, v) => [...r, v], [])
     );
-    ls.sort().reverse();
-    ls = ls.slice(0, Math.min(ls.length, LIM));
-    ls = ls.map(v => v[1]);
+    ls.sort();
 
     var st = new Set();
     ls_red = [];
     ls.forEach(v => {
-        if (!st.has(v[0])) {
-            st.add(v[0]);
-            ls_red.push(v[0] + v[1]);
+        if (!st.has(v[1])) {
+            st.add(v[1]);
+            ls_red.push(v[2]);
         }
     });
+
+    ls.reverse();
+    ls = ls.slice(0, Math.min(ls.length, LIM));
+    ls = ls.map(v => v[1]);
+
     var fttl = '';
     if (feed.title)
         fttl = `<center><h2 class="feedttl">${feed.title}</h2></center>`;
