@@ -194,6 +194,15 @@ const sources = {
             jnls: ['1RIspYzP7ykXpaKqWcD6U7mB7ndQGZAyMrCA9GH1vJEyOPMUXf', 'High impact journals'],
         }
     },
+    arxiv: {
+        name: 'arXiv',
+        url: (w => 'https://rss.arxiv.org/rss/' + w),
+        color: colors.yellow,
+        main: {
+            math: ['math', 'Math'],
+            // many, many more exist
+        }
+    },
     sciam: {
         name: 'Scientific American',
         url: (w => 'http://rss.sciam.com/' + w),
@@ -317,6 +326,7 @@ const LAYS = {
                 sources.wsj.world,
                 sources.nyt.world,
                 sources.nyt.us,
+                sources.nyt.hth,
                 sources.wsj.health,
                 sources.hill.news,
                 sources.csp.wtd,
@@ -340,6 +350,7 @@ const LAYS = {
                 sources.wsj.world,
                 sources.nyt.world,
                 sources.nyt.us,
+                sources.nyt.hth,
                 sources.wsj.health,
                 sources.hill.news,
                 sources.csp.wtd,
@@ -377,7 +388,6 @@ const LAYS = {
             new Feed('tech & business', [
                 sources.wsj.usbiz,
                 sources.wsj.tech,
-                sources.wsj.health,
                 sources.econ.biz,
                 sources.nyt.tech,
                 sources.ebsco.forbes,
@@ -434,6 +444,7 @@ const LAYS = {
             new Feed('research & niche', [
                 sources.pubmed.jnls,
                 sources.tt.all,
+                sources.arxiv.math,
             ]),
         ]),
     ]),
