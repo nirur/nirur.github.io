@@ -1,5 +1,3 @@
-const LIM = 40;
-
 openview = (pg => { window.location = location.origin + location.pathname + '?page=' + pg; })
 var rpage, page;
 {
@@ -24,7 +22,6 @@ const getr = (e, t) => e.querySelector(t);
 const get = (e, t) => getr(e, t)?.textContent;
 const deiter = (l => l.reduce((r, v) => [...r, v], []));
 const elem = (e => document.createElement(e));
-const sleep = ms => new Promise(r => setTimeout(r, ms)); // https://stackoverflow.com/a/39914235
 
 function petty_line(ln) {
     if (ln == undefined || ln == null)
@@ -53,7 +50,7 @@ function petty_elm(elm, sc) {
         } else {
             typ = 'img';
         }
-        media = `<${typ} src=${elm.img}></${typ}>`;
+        media = `<${typ} src=${elm.img} loading="lazy"></${typ}>`;
     }
     return `
 <div class='card' style='background-color: ${sc.color}' onclick='window.open("${elm.piecel}")'>
@@ -91,7 +88,7 @@ function info(el) {
 var CACHE = {};
 async function cached_fetch(url) {
     if (CACHE[url] != undefined)
-        return cache[url];
+        return CACHE[url];
     try {
         ret = await fetch('https://cors-proxy.a91-b83.workers.dev/', {
             method: 'POST',
@@ -122,7 +119,7 @@ async function coll_source(sc) {
     res = res.map(e => [e.dt, e.guid, petty_elm(e, sc)]);
     return res;
 }
-async function coll_feed(feed) {
+async function coll_feed(feed, ELEM) {
     var ls = feed.sources.map(coll_source);
     ls = await Promise.all(ls);
     ls = ls.filter(l => l.length > 0);
@@ -130,7 +127,6 @@ async function coll_feed(feed) {
         l.entries()
             .map(e => [e[1][0].getTime() - e[0] * 7_200_000, e[1][1], e[1][2]])
             .toArray()
-        //.reduce((r, v) => [...r, v], []) // iterator -> array
     );
     ls.sort();
 
@@ -147,26 +143,31 @@ async function coll_feed(feed) {
     ls = ls.slice(0, Math.min(ls.length, LIM));
     ls = ls.map(v => v[1]);*/
     ls_red.reverse();
+    // Following line for crude chop:
     ls_red = ls_red.slice(0, Math.min(ls_red.length, LIM));
 
     var fttl = '';
     if (feed.title)
         fttl = `<center><h2 class="feedttl">${feed.title}</h2></center>`;
-    return `<div class='feed'>` + fttl + ls_red.join('') + `</div>`;
+
+    ELEM.innerHTML += fttl;
+    ls_red.forEach(e => { ELEM.innerHTML += e });
 }
-async function coll_view(view, ns = []) {
-    var ls = view.feeds.map(coll_feed);
+async function coll_view(view, ns = [], ELEM) {
     var ret = elem('div');
     ret.classList = 'view';
     ns.forEach(n => ret.classList.add(`scrn${n}`));
-    ls = await Promise.all(ls);
-    ret.innerHTML = ls.join('');
-    ret.querySelectorAll('.feed').forEach((f, i) => {
-        f.style.flex = view.bkd[i];
-    });
-    return ret;
+    ELEM.appendChild(ret);
+
+    await Promise.all(view.feeds.map((e, i) => {
+        var fd = elem('div');
+        fd.classList = 'feed';
+        fd.style.flex = view.bkd[i];
+        ret.appendChild(fd);
+        return coll_feed(e, fd);
+    }));
 }
-async function collect(lay) {
+async function collect(lay, ELEM) {
     var views = lay.views;
     var clss = [];
     var i = 3;
@@ -178,36 +179,9 @@ async function collect(lay) {
         clss.push(ls);
     }
 
-    var vws = views.map((v, i) => coll_view(v, clss[i])); // wrong
-    vws = await Promise.all(vws);
-    vws = vws.map(v => v.outerHTML).join('')
-    return vws;
+    views.forEach((v, i) => coll_view(v, clss[i], ELEM));
 }
 
-async function chop(l) {
-    var imgs = document.querySelectorAll('img').values();
-    var togo = true;
-    while (togo) {
-        togo = false;
-        for (var img of imgs)
-            if (!(img.complete && img.naturalWidth > 0))
-                togo = true;
-        await sleep(5);
-    }
-
-    var cards = document.querySelectorAll('.card');
-    cards = deiter(cards.values());
-    cards = cards.reverse();
-    cards.forEach(c => {
-        c.hidden = (c.getBoundingClientRect().bottom + window.scrollY > l);
-    });
-}
-
-async function load(lay) {
-    const tba = document.querySelector('#content');
-    tba.innerHTML += await collect(lay);
-    //chop(view.mxlen);
-}
 window.onload = (() => {
     document.querySelector('#chv').innerHTML +=
         Object.keys(LAYS)
@@ -219,6 +193,7 @@ window.onload = (() => {
         document.querySelector('#about').hidden = false;
     } else {
         page = LAYS[args.page];
-        load(page);
+        const tba = document.querySelector('#content');
+        collect(page, tba);
     }
 });

@@ -1,3 +1,5 @@
+const LIM = 80;
+
 class Source {
     postproc = (e => e);
     constructor(url, name, color) {
