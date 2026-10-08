@@ -93,10 +93,12 @@ async function cached_fetch(url) {
     if (CACHE[url] != undefined)
         return cache[url];
     try {
-        CACHE[url] = await fetch(
-            'https://cloudflare-cors-anywhere.a91-b83.workers.dev/?' + url,
-            { cache: 'no-cache' },
-        );
+        ret = await fetch('https://cors-proxy.a91-b83.workers.dev/', {
+            method: 'POST',
+            cache: 'no-cache',
+            body: url,
+        });
+        CACHE[url] = await ret.text();
     } catch (e) {
         CACHE[url] = null;
     }
@@ -107,7 +109,6 @@ async function coll_source(sc) {
     var res = await cached_fetch(sc.url);
     if (res == null)
         return [];
-    res = await res.text();
     res = parse(res);
     res = res.querySelectorAll('item, entry')
         .values()
@@ -129,7 +130,7 @@ async function coll_feed(feed) {
         l.entries()
             .map(e => [e[1][0].getTime() - e[0] * 7_200_000, e[1][1], e[1][2]])
             .toArray()
-            //.reduce((r, v) => [...r, v], []) // iterator -> array
+        //.reduce((r, v) => [...r, v], []) // iterator -> array
     );
     ls.sort();
 
@@ -141,7 +142,7 @@ async function coll_feed(feed) {
             ls_red.push(v[2]);
         }
     });
-    
+
     /*ls.reverse();
     ls = ls.slice(0, Math.min(ls.length, LIM));
     ls = ls.map(v => v[1]);*/
