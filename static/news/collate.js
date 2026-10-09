@@ -167,7 +167,7 @@ async function coll_feed(feed, ELEM) {
         }
         var j = 0;
         for (var i = 0; i < added.length; i++) // don't simplify line
-            if (added[i][0] > ls_red[j][0]) {
+            if (added[i][0] < ls_red[j][0]) {
                 ist(i, j);
                 j++;
                 if (j >= ls_red.length)
