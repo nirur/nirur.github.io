@@ -133,6 +133,7 @@ const sources = {
         main: {
             hdl: ['headlines', 'Headlines'],
             pol: ['politics', 'Politics'],
+            pod: ['podcasts/segments', 'Podcast segments'],
         }
     },
     politico: {
@@ -284,7 +285,8 @@ const sources = {
         }
     },
     // TODO: arXiv? AAAS? zbMATH is cloudflare blocked
-    // Politico, PBS
+    // Politico, PBS; politico done, but bad color. pbs not yet added.
+    // SCOTUSblog: https://www.scotusblog.com/feed/
 };
 for (key in sources) {
     rep = {};
@@ -367,6 +369,8 @@ const LAYS = {
                 sources.mw.brk,
                 sources.mw.urt,
                 sources.onion.all,
+                sources.pbs.hdl,
+                sources.pbs.pol,
             ]),
             new Feed('science', [
                 sources.pubmed.jnls,
@@ -414,6 +418,8 @@ const LAYS = {
                 sources.politico.def,
                 sources.politico.pol,
                 sources.politico.hth,
+                sources.pbs.hdl,
+                sources.pbs.pol,
             ]),
             new Feed('center & right', [
                 sources.wsj.opn,
@@ -451,28 +457,4 @@ const LAYS = {
             ]),
         ]),
     ]),
-    /*cul: new View('Culture', [
-        new Feed('dailies', [
-            sources.wiki.potd,
-            sources.wiki.home,
-        ]), // comment out
-        new Feed('sports', [
-            sources.wsj.sports,
-            sources.nyt.spt_bb,
-            sources.nyt.spt_gf,
-            sources.nyt.spt_hk,
-            sources.nyt.spt_sc,
-            sources.nyt.spt_tn,
-            sources.nyt.spt_cb,
-            sources.nyt.spt_cf,
-            sources.nyt.spt_pb,
-            sources.nyt.spt_pf,
-        ]),
-        new Feed('arts, fashion & lifestyle', [
-            sources.wsj.arts,
-            sources.wsj.style,
-            sources.wsj.lifestyle,
-            sources.nyt.art,
-        ]),
-    ]),*/
 };

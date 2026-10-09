@@ -1,3 +1,7 @@
+html {
+    overflow-x: hidden;
+}
+
 #chv {
     display: flex;
     border-width: 0;
@@ -96,7 +100,7 @@
     padding: 8px !important;
 }
 
-#content img {
+#content img, #content audio {
     width: 90%;
     margin: 5%;
 }
