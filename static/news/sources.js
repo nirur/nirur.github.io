@@ -1,4 +1,4 @@
-const LIM = 80;
+const LIM = 20;
 
 class Source {
     postproc = (e => e);
@@ -304,6 +304,7 @@ safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
 limn = (n => (ls => safesl(ls, n)));
 last = (ls => [ls[ls.length - 1]]);
 sources.nasa.iotd.postproc = limn(1);
+sources.onion.all.postproc = limn(1);
 sources.wiki.home.postproc = last;
 sources.wiki.potd.postproc = last;
 

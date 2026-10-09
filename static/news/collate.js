@@ -52,14 +52,26 @@ function petty_elm(elm, sc) {
         }
         media = `<${typ} src=${elm.img} loading="lazy"></${typ}>`;
     }
-    return `
+    var ret = elem('div');
+    ret.classList = 'card';
+    ret.style.backgroundColor = sc.color;
+    ret.onclick = (() => window.open(elm.piecel));
+    ret.innerHTML = `
+    <h1>${elm.piece}</h1>
+ ` + media + `
+    <p>${elm.pieced}</p>
+    <p>${pdt}</p>
+    <p>${sc.name}</p>
+`;
+    return ret;
+    /*return `
 <div class='card' style='background-color: ${sc.color}' onclick='window.open("${elm.piecel}")'>
     <h1>${elm.piece}</h1>
  ` + media + `
     <p>${elm.pieced}</p>
     <p>${pdt}</p>
     <p>${sc.name}</p>
-</div>`;
+</div>`;*/
 }
 function petty_nav(name, sel, ttl) {
     return `
@@ -120,7 +132,62 @@ async function coll_source(sc) {
     return res;
 }
 async function coll_feed(feed, ELEM) {
-    var ls = feed.sources.map(coll_source);
+    var sources = feed.sources;
+    var ogs = sources.map(sc => (new URL(sc.url)).origin);
+    var scs = new Set(ogs);
+    var obj = {};
+    for (var or of scs)
+        obj[or] = [];
+    sources.forEach((sc, i) => { obj[ogs[i]].push(sc) });
+
+    var fttl = '';
+    if (feed.title)
+        fttl = `<center><h2 class="feedttl">${feed.title}</h2></center>`;
+    ELEM.innerHTML += fttl;
+
+    var added = [];
+    Object.values(obj).map(async scg => {
+        var ls = scg.map(coll_source);
+        ls = await Promise.all(ls);
+        ls = ls.filter(l => l.length > 0);
+        ls = ls.flatMap(l =>
+            l.entries()
+                .map(e => [e[1][0].getTime() - e[0] * 7_200_000, e[1][1], e[1][2]])
+                .toArray()
+        );
+        ls.sort();
+
+        var st = new Set();
+        ls_red = [];
+        ls.forEach(v => {
+            if (!st.has(v[1])) {
+                st.add(v[1]);
+                ls_red.push([v[0], v[2]]);
+            }
+        });
+        ls_red.reverse();
+        // crude chop:
+        ls_red = ls_red.slice(0, Math.min(ls_red.length, LIM));
+
+        ist = (i, j) => {
+            ELEM.insertBefore(ls_red[j][1], added[i][1]);
+            added.splice(i, 0, ls_red[j]);
+        }
+        var j = 0;
+        for (var i = 0; i < added.length; i++) // don't simplify
+            if (added[i][0] > ls_red[j][0]) {
+                ist(i, j);
+                j++;
+                if (j >= ls_red.length)
+                    break;
+            }
+        for (var k = j; k < ls_red.length; k++) {
+            ELEM.appendChild(ls_red[k][1]);
+            added.push(ls_red[k]);
+        }
+    });
+
+    /*var ls = sources.map(coll_source);
     ls = await Promise.all(ls);
     ls = ls.filter(l => l.length > 0);
     ls = ls.flatMap(l =>
@@ -139,9 +206,9 @@ async function coll_feed(feed, ELEM) {
         }
     });
 
-    /*ls.reverse();
+    / *ls.reverse();
     ls = ls.slice(0, Math.min(ls.length, LIM));
-    ls = ls.map(v => v[1]);*/
+    ls = ls.map(v => v[1]);* /
     ls_red.reverse();
     // Following line for crude chop:
     ls_red = ls_red.slice(0, Math.min(ls_red.length, LIM));
@@ -152,6 +219,7 @@ async function coll_feed(feed, ELEM) {
 
     ELEM.innerHTML += fttl;
     ls_red.forEach(e => { ELEM.innerHTML += e });
+    */
 }
 async function coll_view(view, ns = [], ELEM) {
     var ret = elem('div');
