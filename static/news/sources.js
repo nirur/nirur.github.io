@@ -458,7 +458,7 @@ const LAYS = {
                 sources.nyt.sunopn,
                 sources.nyt.hth,
             ]),
-        ]),
+        ], [2, 1]),
         new View([
             new Feed(null, [
                 sources.pbs.hdl,
