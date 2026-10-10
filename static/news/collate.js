@@ -57,7 +57,7 @@ function petty_elm(elm, sc) {
     ret.style.backgroundColor = sc.color;
     ret.onclick = (() => window.open(elm.piecel));
     ret.innerHTML = `
-    <h1>${elm.piece}</h1>
+    <div class='t_h'>${elm.piece}</div>
  ` + media + `
     <p>${elm.pieced}</p>
     <p>${pdt}</p>
@@ -67,11 +67,17 @@ function petty_elm(elm, sc) {
 }
 function petty_nav(name, sel, ttl) {
     return `
-<div${sel ? ' id="vws"' : ''} class='hide' onClick='openview("${name}")' >
-    <center>
-        <h3>${ttl}</h3>
-    </center>
-</div>`;
+<span${sel ? ' id="vws"' : ''} class='hide' onClick='openview("${name}")' >
+    ${ttl}
+</span>`;
+}
+
+function algo(time, rank) {
+    // higher is better
+    const push = 86_400_000; // 7_200_000
+    return time - rank * push;
+    // Hacker News algo:
+    //return (-rank - 1) * ((Date.now() - time) / 3_600_000 + 2) ** 0.56
 }
 
 function info(el) {
@@ -134,7 +140,7 @@ async function coll_feed(feed, ELEM) {
 
     var fttl = '';
     if (feed.title)
-        fttl = `<center><h2 class="feedttl">${feed.title}</h2></center>`;
+        fttl = `<div class="feedttl">${feed.title}</div>`;
     ELEM.innerHTML += fttl;
 
     var added = [];
@@ -143,9 +149,9 @@ async function coll_feed(feed, ELEM) {
         ls = await Promise.all(ls);
         ls = ls.filter(l => l.length > 0);
         ls = ls.flatMap(l =>
-            l.entries()
-                .map(e => [e[1][0].getTime() - e[0] * 7_200_000, e[1][1], e[1][2]])
-                .toArray()
+            l.map((e, r) =>
+                [algo(e[0].getTime(), r), e[1], e[2]]
+            )
         );
         ls.sort();
 
@@ -160,6 +166,8 @@ async function coll_feed(feed, ELEM) {
         ls_red.reverse();
         // crude chop:
         ls_red = ls_red.slice(0, Math.min(ls_red.length, LIM));
+        if (ls_red.length == 0)
+            return;
 
         ist = (i, j) => {
             ELEM.insertBefore(ls_red[j][1], added[i][1]);

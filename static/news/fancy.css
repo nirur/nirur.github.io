@@ -23,6 +23,8 @@ html {
 #chv > * {
     flex: 1;
     font-family: "Courier Prime", "Menlo";
+    text-align: center;
+    padding: 16px;
 }
 
 #chv *:hover, #vws {
@@ -75,6 +77,21 @@ html {
     }
 }
 
+#content {
+    padding: 8px !important;
+}
+
+#content img, #content audio {
+    display: block;
+    margin: auto;
+}
+
+#content img {
+    max-height: 250px;
+    max-width: 90%;
+    width: auto;
+}
+
 .feed {
     margin: 4px;
 }
@@ -82,6 +99,10 @@ html {
 .feedttl {
     font-family: "Bodoni Moda", "Georgia";
     font-style: italic;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-size: large;
 }
 
 .card {
@@ -96,17 +117,8 @@ html {
     color: snow !important;
 }
 
-#content {
-    padding: 8px !important;
+.card .t_h {
+    font-weight: bold;
+    font-size: large;
+    margin-bottom: 1em;
 }
-
-#content img, #content audio {
-    width: 90%;
-    margin: 5%;
-}
-
-/*
-#content a {
-    color: black;
-    text-decoration: none;
-}*/

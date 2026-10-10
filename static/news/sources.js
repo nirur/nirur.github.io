@@ -1,11 +1,11 @@
 const LIM = 20;
 
 class Source {
-    postproc = (e => e);
-    constructor(url, name, color) {
+    constructor(url, name, color, postproc = (e => e)) {
         this.url = url;
         this.name = name;
         this.color = color;
+        this.postproc = postproc;
     }
 }
 class Feed {
@@ -46,16 +46,32 @@ const colors = {
     dblue: 'paleturquoise', // NYT
     yellow: 'beige', // Hard sci
     red: 'mistyrose', // WSJ
+    dred: 'lightcoral', // WSJ opinion
     green: 'honeydew', // Bloomberg, MW, Forbes, Barron's (no RSS)
     purple: 'lavender', // Blog posts
     orange: 'oldlace', // Soft sci
     violet: 'violet', // PBS, Politico
 }
 
+// Some shortcuts for sourcing
+function c1(jn) {
+    rep = {};
+    for (sc in jn.main) {
+        info = jn.main[sc];
+        u = info[0], n = info[info.length - 1];
+        rep[sc] = new Source(
+            jn.url(info[0]),
+            (n ? `${jn.name} > ${n}` : jn.name),
+            jn.color,
+        );
+    }
+    return rep;
+}
+
 // A good place to start:
 // https://about.fb.com/wp-content/uploads/2016/05/rss-urls-1.pdf
 const sources = {
-    wsj: {
+    wsj: c1({
         name: 'WSJ',
         url: (w => 'https://feeds.content.dowjones.io/public/rss/' + w),
         color: colors.red,
@@ -76,8 +92,8 @@ const sources = {
             style: ['RSSStyle', 'Style'],
             sports: ['rsssportsfeed', 'Sports'],
         }
-    },
-    mw: {
+    }),
+    mw: c1({
         name: 'MarketWatch',
         url: (w => 'https://feeds.content.dowjones.io/public/rss/' + w),
         color: colors.green,
@@ -87,11 +103,11 @@ const sources = {
             brk: ['mw_bulletins', 'Breaking'],
             urt: ['mw_marketpulse', 'Ultra real-time'],
         }
-    },
-    nyt: {
+    }),
+    nyt: c1({
         name: 'NYT',
         url: (w => 'https://rss.nytimes.com/services/xml/rss/nyt/' + w + ".xml"),
-        color: colors.blue,
+        color: colors.dblue,
         main: {
             world: ['World'],
             us: ['US'],
@@ -114,8 +130,8 @@ const sources = {
             spt_pf: ['ProFootball', 'Pro football'],
             // more NYT exists, listed on their site
         }
-    },
-    econ: {
+    }),
+    econ: c1({
         name: 'The Economist',
         url: (w => 'https://economist.com/' + w + '/rss.xml'),
         color: colors.blue,
@@ -125,59 +141,56 @@ const sources = {
             fx: ['free-exchange', 'Free exchange'],
             // many more Economist exist
         }
-    },
-    pbs: {
+    }),
+    pbs: c1({
         name: 'PBS',
         url: (w => 'https://www.pbs.org/newshour/feeds/rss/' + w),
-        color: colors.violet,
+        color: colors.blue,
         main: {
             hdl: ['headlines', 'Headlines'],
             pol: ['politics', 'Politics'],
             pod: ['podcasts/segments', 'Podcast segments'],
         }
-    },
-    politico: {
+    }),
+    politico: c1({
         name: 'Politico',
         url: (w => `https://rss.politico.com/${w}.xml`),
-        color: colors.violet,
+        color: colors.blue,
         main: {
             cong: ['congress', 'Congress'],
             def: ['defense', 'Defense'],
             pol: ['politics-news', 'Politics'],
             hth: ['healthcare', 'Healthcare'],
         }
-    },
-    yahoo: {
+    }),
+    yahoo: c1({
         name: 'Yahoo',
         url: (w => `https://${w}.yahoo.com/rss/economy`),
         color: colors.green,
         main: {
             fin: ['finance', 'Finance'],
         }
-    },
-    barr: {
+    }),
+    barr: c1({
         name: "Barron\'s",
         url: (w => w),
         color: colors.white,
         main: {
             pod: ['https://video-api.shdsvc.dowjones.io/api/podcasts/feed/barron%27s%20live%20conference%20calls', "live podcast"],
         }
-    },
-    ebsco: {
-        // Bloomberg, via EBSCO, via SCCLD
+    }),
+    ebsco: c1({
         // A new alert/feed must be created yearly
         name: 'EBSCO',
-        // url: (w => 'https://research-ebsco-com.rpa.sccl.org/rss/' + w),
         url: (w => 'https://research.ebsco.com/rss/' + w),
         color: colors.green,
         main: {
             bloom: ['c2E6MTBjZjI4MzctMWJhNC00MzgwLTkyYmMtMTY1NjBkOTM1ODdh', 'Bloomberg'],
             forbes: ['c2E6NTYyMDM2MjAtYjk1MC00OGQ2LTgxNzYtOGI4MGQ3NThmNDE4', 'Forbes'],
+            // TODO: Atlantic
         }
-    },
-    // TODO: Atlantic. Don't have read access though
-    nasa: {
-        // NASA
+    }),
+    nasa: c1({
         name: 'NASA',
         url: (w => 'https://www.nasa.gov/' + w),
         color: colors.orange,
@@ -187,8 +200,8 @@ const sources = {
             news: ['news-release/feed', 'News'],
             // more NASA exists, listed on their site
         }
-    },
-    pubmed: {
+    }),
+    pubmed: c1({
         name: 'PubMed',
         url: (w => 'https://pubmed.ncbi.nlm.nih.gov/rss/search/' + w + '/?limit=50'),
         color: colors.yellow,
@@ -196,8 +209,8 @@ const sources = {
         main: {
             jnls: ['1RIspYzP7ykXpaKqWcD6U7mB7ndQGZAyMrCA9GH1vJEyOPMUXf', 'High impact journals'],
         }
-    },
-    arxiv: {
+    }),
+    arxiv: c1({
         name: 'arXiv',
         url: (w => 'https://rss.arxiv.org/rss/' + w),
         color: colors.yellow,
@@ -205,8 +218,8 @@ const sources = {
             math: ['math', 'Math'],
             // many, many more exist
         }
-    },
-    sciam: {
+    }),
+    sciam: c1({
         name: 'Scientific American',
         url: (w => 'http://rss.sciam.com/' + w),
         color: colors.orange,
@@ -216,8 +229,8 @@ const sources = {
             basic: ['basic-science', 'Basic Science'],
             space: ['sciam/space', 'Space'],
         }
-    },
-    physorg: {
+    }),
+    physorg: c1({
         name: 'Phys.org',
         url: (w => 'https://phys.org/rss-feed/' + w),
         color: colors.orange,
@@ -232,16 +245,16 @@ const sources = {
             econ: ['science-news/economics-business', 'Economics'], // opinion-flavored
             // more exist, on their site
         }
-    },
-    tt: {
-        name: 'Terry Tao',
+    }),
+    wp: c1({
+        name: 'WordPress',
         url: (w => `https://${w}.wordpress.com/feed/`),
         color: colors.purple,
         main: {
-            all: ['terrytao', null],
+            tt: ['terrytao', 'Terry Tao'],
         }
-    },
-    wiki: {
+    }),
+    wiki: c1({
         name: 'Wikipedia',
         url: (w => w),
         color: colors.orange,
@@ -249,8 +262,8 @@ const sources = {
             home: ['https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom', 'Home'],
             potd: ['https://commons.wikimedia.org/w/api.php?action=featuredfeed&feed=potd&feedformat=atom&language=en', 'PoTD']
         }
-    },
-    csp: {
+    }),
+    csp: c1({
         name: 'C-SPAN',
         url: (w => 'https://feeds.megaphone.fm/' + w),
         color: colors.white,
@@ -259,8 +272,8 @@ const sources = {
             csf: ['CSPAN8750886650', 'Ceasefire'],
             hist: ['cspantheweekly', 'Extreme Mortman'],
         }
-    },
-    hill: {
+    }),
+    hill: c1({
         name: 'The Hill',
         url: (w => 'https://thehill.com/' + w + '/feed'),
         color: colors.white,
@@ -275,40 +288,24 @@ const sources = {
             p_tra: ['transportation', 'Transportation'],
             p_intl: ['international', 'International'],
         }
-    },
-    onion: {
-        name: "The Onion",
-        url: (w => w),
-        color: colors.purple,
-        main: {
-            all: ['https://theonion.com/feed/', null],
-        }
-    },
-    // TODO: arXiv? AAAS? zbMATH is cloudflare blocked
-    // Politico, PBS; politico done, but bad color. pbs not yet added.
+    }),
+    onion: new Source(
+        'https://theonion.com/feed/',
+        "The Onion",
+        colors.purple,
+    ),
+    // TODO: AAAS? zbMATH is cloudflare blocked
     // SCOTUSblog: https://www.scotusblog.com/feed/
+    // HackerNews, more techy: https://news.ycombinator.com/item?id=16908241
 };
-for (key in sources) {
-    rep = {};
-    jn = sources[key];
-    for (sc in jn.main) {
-        info = jn.main[sc];
-        u = info[0], n = info[info.length - 1];
-        rep[sc] = new Source(
-            jn.url(info[0]),
-            (n ? `${jn.name} > ${n}` : jn.name),
-            jn.color,
-        );
-    }
-    sources[key] = rep;
-}
-safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
-limn = (n => (ls => safesl(ls, n)));
-last = (ls => [ls[ls.length - 1]]);
+var safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
+var limn = (n => (ls => safesl(ls, n)));
+var last = (ls => [ls[ls.length - 1]]);
 sources.nasa.iotd.postproc = limn(1);
-sources.onion.all.postproc = limn(1);
+sources.onion.postproc = limn(1);
 sources.wiki.home.postproc = last;
 sources.wiki.potd.postproc = last;
+sources.wsj.opn.color = colors.dred;
 
 const LAYS = {
     main: new Layout('Main', [
@@ -335,7 +332,7 @@ const LAYS = {
                 sources.wsj.health,
                 sources.hill.news,
                 sources.csp.wtd,
-                sources.onion.all,
+                sources.onion,
             ]),
             new Feed('science', [
                 sources.pubmed.jnls,
@@ -368,7 +365,7 @@ const LAYS = {
                 sources.mw.rt,
                 sources.mw.brk,
                 sources.mw.urt,
-                sources.onion.all,
+                sources.onion,
                 sources.pbs.hdl,
                 sources.pbs.pol,
             ]),
@@ -407,30 +404,79 @@ const LAYS = {
     ]),
     pol: new Layout('Politics', [
         new View([
-            new Feed('left lean', [
-                sources.econ.biz,
-                sources.econ.fx,
+            new Feed('left', [
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
                 sources.nyt.hth,
+            ]),
+            new Feed('center (ish)', [
+                sources.pbs.hdl,
+                sources.pbs.pol,
                 sources.politico.cong,
                 sources.politico.def,
                 sources.politico.pol,
                 sources.politico.hth,
-                sources.pbs.hdl,
-                sources.pbs.pol,
-            ]),
-            new Feed('center & right', [
-                sources.wsj.opn,
+                sources.hill.news,
+                sources.hill.biz,
+                sources.csp.wtd,
                 sources.wsj.world,
                 sources.wsj.usbiz,
                 sources.wsj.pol,
                 sources.wsj.health,
                 sources.wsj.usn,
+                sources.econ.biz,
+                sources.econ.fx,
+            ]),
+            new Feed('right', [
+                sources.wsj.opn,
+            ]),
+        ]),
+        new View([
+            new Feed('less biased', [
+                sources.pbs.hdl,
+                sources.pbs.pol,
+                sources.politico.cong,
+                sources.politico.def,
+                sources.politico.pol,
+                sources.politico.hth,
                 sources.hill.news,
                 sources.hill.biz,
                 sources.csp.wtd,
+                sources.wsj.world,
+                sources.wsj.usbiz,
+                sources.wsj.pol,
+                sources.wsj.health,
+                sources.wsj.usn,
+                sources.econ.biz,
+                sources.econ.fx,
+            ]),
+            new Feed('more biased', [
+                sources.wsj.opn,
+                sources.nyt.world,
+                sources.nyt.us,
+                sources.nyt.sunopn,
+                sources.nyt.hth,
+            ]),
+        ]),
+        new View([
+            new Feed(null, [
+                sources.pbs.hdl,
+                sources.pbs.pol,
+                sources.econ.biz,
+                sources.econ.fx,
+                sources.politico.cong,
+                sources.politico.def,
+                sources.politico.pol,
+                sources.politico.hth,
+                sources.hill.news,
+                sources.hill.biz,
+                sources.csp.wtd,
+                sources.wsj.world,
+                sources.wsj.usbiz,
+                sources.wsj.pol,
+                sources.wsj.health,
+                sources.wsj.usn,
             ]),
         ]),
     ]),
@@ -452,7 +498,7 @@ const LAYS = {
             ]),
             new Feed('research & niche', [
                 sources.pubmed.jnls,
-                sources.tt.all,
+                sources.wp.tt,
                 sources.arxiv.math,
             ]),
         ]),

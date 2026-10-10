@@ -68,7 +68,7 @@ header h1 {
 
 .navy:not([hidden]) {
     font-family: "Source Code Pro", serif;
-    font-size: larger;
+    /*font-size: larger;*/
     flex-direction: column;
     display: flex;
 }
@@ -109,7 +109,7 @@ footer {
 @media (width < 800px) {
     body {
         flex-direction: column;
-        font-size: large;
+        /*font-size: large;*/
     }
     .navy * {
         text-align: center;
