@@ -42,7 +42,7 @@ class Layout {
 
 const colors = {
     white: 'white', // c-span, podcasts
-    blue: 'azure', // Economist, Atlantic
+    blue: 'azure', // Economist, Atlantic, PBS, Politico
     dblue: 'paleturquoise', // NYT
     yellow: 'beige', // Hard sci
     red: 'mistyrose', // WSJ
@@ -50,7 +50,6 @@ const colors = {
     green: 'honeydew', // Bloomberg, MW, Forbes, Barron's (no RSS)
     purple: 'lavender', // Blog posts
     orange: 'oldlace', // Soft sci
-    violet: 'violet', // PBS, Politico
 }
 
 // Some shortcuts for sourcing
@@ -294,9 +293,15 @@ const sources = {
         "The Onion",
         colors.purple,
     ),
+    scotus: new Source(
+        'https://www.scotusblog.com/feed/',
+        'SCOTUSblog',
+        colors.white,
+    ),
     // TODO: AAAS? zbMATH is cloudflare blocked
-    // SCOTUSblog: https://www.scotusblog.com/feed/
-    // HackerNews, more techy: https://news.ycombinator.com/item?id=16908241
+    // SCOTUS blog: https://www.scotusblog.com/feed/
+    // Hacker News, more techy: https://news.ycombinator.com/item?id=16908241
+    // Tangle?
 };
 var safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
 var limn = (n => (ls => safesl(ls, n)));
@@ -489,16 +494,34 @@ const LAYS = {
                 sources.sciam.basic,
                 //sources.nyt.space,
                 sources.nasa.iotd,
+                sources.nasa.news,
+            ]),
+            new Feed('middle ground', [
+                sources.wp.tt,
                 sources.physorg.nano,
                 sources.physorg.phys,
-                sources.physorg.space,
+                // sources.physorg.space, // using others for space
                 sources.physorg.chem,
                 sources.physorg.bio,
-                sources.physorg.math,
+                // sources.physorg.math, // using others for math
             ]),
-            new Feed('research & niche', [
+            new Feed('research', [
                 sources.pubmed.jnls,
+                sources.arxiv.math,
+            ]),
+        ]),
+        new View([
+            new Feed('news', [
+                sources.sciam.all,
+                sources.nasa.iotd,
+                sources.nasa.news,
                 sources.wp.tt,
+                sources.physorg.phys,
+                sources.physorg.chem,
+                sources.physorg.bio,
+            ]),
+            new Feed('research', [
+                sources.pubmed.jnls,
                 sources.arxiv.math,
             ]),
         ]),

@@ -96,18 +96,22 @@ function info(el) {
 }
 
 var CACHE = {};
-async function cached_fetch(url) {
-    if (CACHE[url] != undefined)
-        return CACHE[url];
-    try {
-        ret = await fetch('https://cors-proxy.a91-b83.workers.dev/', {
-            method: 'POST',
-            cache: 'no-cache',
-            body: url,
-        });
-        CACHE[url] = await ret.text();
-    } catch (e) {
-        CACHE[url] = null;
+async function rote_fetch(url) {
+    var res = await fetch('https://cors-proxy.a91-b83.workers.dev/', {
+        method: 'POST',
+        cache: 'no-cache',
+        body: url,
+    });
+    if (res.status != 200)
+        return null;
+    res = await res.text();
+    return res;
+}
+
+function cached_fetch(url) {
+    if (CACHE[url] == undefined) {
+        // no await to ensure no repeats
+        CACHE[url] = rote_fetch(url);
     }
     return CACHE[url];
 }
