@@ -1,6 +1,8 @@
-const LIM = 20;
+const VMAX = 4;
+const POSTPROC = (l => l.slice(0, Math.min(l.length, 20)));
 
 class Source {
+    weight = 1;
     constructor(url, name, color) {
         this.url = url;
         this.name = name;
@@ -107,6 +109,7 @@ const sources = {
         url: (w => 'https://rss.nytimes.com/services/xml/rss/nyt/' + w + ".xml"),
         color: colors.dblue,
         main: {
+            home: ['HomePage', null],
             world: ['World'],
             us: ['US'],
             econ: ['Economy'],
@@ -347,8 +350,8 @@ sources.cs.hn.postproc = (l => l.map(e => {
 }));
 sources.scotus.postproc = (l => l.map(e => {
     var descr = petty_line(get(e.raw, 'encoded'))
-    var ind = descr.substring(1).indexOf('<p>');
-    descr = descr.substring(0, (ind != -1 ? ind : descr.length));
+    var ind = descr.indexOf('</p>');
+    descr = descr.substring(0, ind + 4);
     e.pieced = descr;
     return e;
 }));
@@ -363,23 +366,26 @@ const LAYS = {
                 sources.nyt.hth,
             ]),
             new Feed('center (ish)', [
-                sources.pbs.hdl,
-                sources.pbs.pol,
-                sources.politico.cong,
-                sources.politico.def,
-                sources.politico.pol,
-                sources.politico.hth,
                 sources.hill.news,
                 sources.hill.biz,
                 sources.csp.wtd,
+                sources.scotus,
+            ]),
+            new Feed('spread', [
+                sources.nyt.home,
+                //sources.pbs.hdl, // lower quality
+                //sources.pbs.pol, // lower quality
                 sources.wsj.world,
                 sources.wsj.usbiz,
                 sources.wsj.pol,
                 sources.wsj.health,
                 sources.wsj.usn,
+                sources.politico.cong,
+                sources.politico.def,
+                sources.politico.pol,
+                sources.politico.hth,
                 sources.econ.biz,
                 sources.econ.fx,
-                sources.scotus,
             ]),
             new Feed('right', [
                 sources.wsj.opn,
@@ -388,15 +394,16 @@ const LAYS = {
         new View([
             new Feed('less biased', [
                 sources.scotus,
-                sources.pbs.hdl,
-                sources.pbs.pol,
+                sources.hill.news,
+                sources.hill.biz,
+                sources.csp.wtd,
+                sources.scotus,
+            ]),
+            new Feed('medium', [
                 sources.politico.cong,
                 sources.politico.def,
                 sources.politico.pol,
                 sources.politico.hth,
-                sources.hill.news,
-                sources.hill.biz,
-                sources.csp.wtd,
                 sources.wsj.world,
                 sources.wsj.usbiz,
                 sources.wsj.pol,
@@ -404,9 +411,35 @@ const LAYS = {
                 sources.wsj.usn,
                 sources.econ.biz,
                 sources.econ.fx,
-                sources.scotus,
             ]),
             new Feed('more biased', [
+                sources.wsj.opn,
+                sources.nyt.world,
+                sources.nyt.us,
+                sources.nyt.sunopn,
+                sources.nyt.hth,
+            ]),
+        ], [1, 1, 1]),
+        new View([
+            new Feed('lower bias', [
+                sources.scotus,
+                sources.hill.news,
+                sources.hill.biz,
+                sources.csp.wtd,
+                sources.scotus,
+                sources.politico.cong,
+                sources.politico.def,
+                sources.politico.pol,
+                sources.politico.hth,
+                sources.wsj.world,
+                sources.wsj.usbiz,
+                sources.wsj.pol,
+                sources.wsj.health,
+                sources.wsj.usn,
+                sources.econ.biz,
+                sources.econ.fx,
+            ]),
+            new Feed('higher bias', [
                 sources.wsj.opn,
                 sources.nyt.world,
                 sources.nyt.us,

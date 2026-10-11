@@ -182,7 +182,6 @@ async function coll_feed(feed, ELEM, rules = []) {
         ls.reverse();
 
         // crude chop:
-        ls = ls.slice(0, Math.min(ls.length, LIM));
         if (ls.length == 0)
             return;
 
@@ -222,17 +221,17 @@ async function coll_view(view, ns = [], ELEM, rules = []) {
 async function collect(lay, ELEM) {
     var views = lay.views;
     var clss = [];
-    var i = 3;
+    var i = VMAX;
     for (var j in views) {
         var ln = views[j].feeds.length;
-        ln = (ln <= 3 ? ln : 3);
+        ln = (ln <= VMAX ? ln : VMAX);
         var ls = [];
         for (; i >= ln; i--)
             ls.push(i);
         clss.push(ls);
     }
 
-    var rules = [lay.postproc];
+    var rules = [POSTPROC, lay.postproc];
     views.forEach((v, i) => coll_view(v, clss[i], ELEM, rules));
 }
 

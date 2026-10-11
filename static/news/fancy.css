@@ -40,7 +40,18 @@ html {
     flex-direction: row;
 }
 
-@media (width < 800px) {
+@media (width < 900px) {
+    #chv {
+        flex-direction: column;
+    }
+}
+@media (width >= 900px) {
+    #chv {
+        flex-direction: row;
+    }
+}
+
+@media (width < 700px) {
     .view:not(.scrn1) {
         display: none;
     }
@@ -48,11 +59,8 @@ html {
         display: flex;
         margin: 0px 8px;
     }
-    #chv {
-        flex-direction: column;
-    }
 }
-@media (width >= 800px) and (width < 1225px) {
+@media (width >= 700px) and (width < 900px) {
     .view:not(.scrn2) {
         display: none;
     }
@@ -60,20 +68,23 @@ html {
         display: flex;
         margin: 0px 8px;
     }
-    #chv {
-        flex-direction: row;
-    }
 }
-@media (width >= 1225px) {
+@media (width >= 900px) and (width < 1225px) {
     .view:not(.scrn3) {
         display: none;
     }
     .view.scrn3 {
         display: flex;
-        margin: 0px 108px;
+        margin: 0px 8px;
     }
-    #chv {
-        flex-direction: row;
+}
+@media (width >= 1225px) {
+    .view:not(.scrn4) {
+        display: none;
+    }
+    .view.scrn4 {
+        display: flex;
+        margin: 0px 108px;
     }
 }
 
