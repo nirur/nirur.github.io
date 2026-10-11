@@ -69,7 +69,7 @@ html {
         margin: 0px 8px;
     }
 }
-@media (width >= 900px) and (width < 1225px) {
+@media (width >= 900px) and (width < 1450px) {
     .view:not(.scrn3) {
         display: none;
     }
@@ -78,7 +78,7 @@ html {
         margin: 0px 8px;
     }
 }
-@media (width >= 1225px) {
+@media (width >= 1450px) {
     .view:not(.scrn4) {
         display: none;
     }

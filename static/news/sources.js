@@ -316,10 +316,23 @@ const sources = {
             'LWN',
             colors.purple,
         )
-    }
+    },
+    cfr: new Source(
+        'https://www.cfr.org/feed',
+        'Council on Foreign Relations',
+        colors.purple,
+    ),
+    bul: new Source(
+        'https://www.thebulwark.com/feed',
+        'The Bulwark',
+        colors.purple,
+    )
     // TODO: AAAS? zbMATH is cloudflare blocked
     // https://news.ycombinator.com/item?id=16908241
-    // Tangle?
+    // Tangle? Paywalled
+    // DO NOT put Newsweek here. See Ad Fontes' ratings of their various
+    // articles, and read the explanations. They use AI without disclosing it,
+    // and the AI tends to make mistakes. They also don't disclose corrections.
 };
 var safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
 var limn = (n => (ls => safesl(ls, n)));
@@ -370,6 +383,7 @@ const LAYS = {
                 sources.hill.biz,
                 sources.csp.wtd,
                 sources.scotus,
+                sources.cfr,
             ]),
             new Feed('spread', [
                 sources.nyt.home,
@@ -386,6 +400,7 @@ const LAYS = {
                 sources.politico.hth,
                 sources.econ.biz,
                 sources.econ.fx,
+                sources.bul,
             ]),
             new Feed('right', [
                 sources.wsj.opn,
@@ -398,6 +413,7 @@ const LAYS = {
                 sources.hill.biz,
                 sources.csp.wtd,
                 sources.scotus,
+                sources.cfr,
             ]),
             new Feed('medium', [
                 sources.politico.cong,
@@ -418,6 +434,7 @@ const LAYS = {
                 sources.nyt.us,
                 sources.nyt.sunopn,
                 sources.nyt.hth,
+                sources.bul,
             ]),
         ], [1, 1, 1]),
         new View([
@@ -438,6 +455,7 @@ const LAYS = {
                 sources.wsj.usn,
                 sources.econ.biz,
                 sources.econ.fx,
+                sources.cfr,
             ]),
             new Feed('higher bias', [
                 sources.wsj.opn,
@@ -445,6 +463,7 @@ const LAYS = {
                 sources.nyt.us,
                 sources.nyt.sunopn,
                 sources.nyt.hth,
+                sources.bul,
             ]),
         ], [2, 1]),
         new View([
@@ -498,10 +517,7 @@ const LAYS = {
     sci: new Layout('Nerdy', [
         new View([
             new Feed('mainstream', [
-                sources.sciam.all,
-                sources.sciam.news,
-                sources.sciam.space,
-                sources.sciam.basic,
+                //sources.sciam.all, // lower quality
                 sources.nasa.iotd,
                 sources.nasa.news,
                 sources.cs.ars,
@@ -526,17 +542,38 @@ const LAYS = {
         ]),
         new View([
             new Feed('news', [
-                sources.sciam.all,
+                //sources.sciam.all, // lower quality
                 sources.nasa.iotd,
                 sources.nasa.news,
                 sources.wp.tt,
-                sources.physorg.phys,
-                sources.physorg.chem,
-                sources.physorg.bio,
             ]),
             new Feed('research', [
                 sources.pubmed.jnls,
                 sources.arxiv.math,
+                sources.physorg.phys,
+                sources.physorg.chem,
+                sources.physorg.bio,
+            ]),
+            new Feed('software', [
+                sources.cs.hn,
+                sources.cs.lwn,
+            ]),
+        ]),
+        new View([
+            new Feed('light', [
+                //sources.sciam.all, // lower quality
+                sources.nasa.iotd,
+                sources.nasa.news,
+                sources.wp.tt,
+                sources.cs.hn,
+                sources.cs.lwn,
+            ]),
+            new Feed('heavy', [
+                sources.pubmed.jnls,
+                sources.arxiv.math,
+                sources.physorg.phys,
+                sources.physorg.chem,
+                sources.physorg.bio,
             ]),
         ]),
     ]),
