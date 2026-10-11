@@ -1,11 +1,10 @@
 const LIM = 20;
 
 class Source {
-    constructor(url, name, color, postproc = (e => e)) {
+    constructor(url, name, color) {
         this.url = url;
         this.name = name;
         this.color = color;
-        this.postproc = postproc;
     }
 }
 class Feed {
@@ -17,7 +16,6 @@ class Feed {
 class View {
     constructor(lst, bkd = null) {
         this.bkd = (bkd ? bkd : this.dfbkd(lst.length));
-        //this.mxlen = mxlen;
         this.feeds = lst;
     }
 
@@ -47,9 +45,10 @@ const colors = {
     yellow: 'beige', // Hard sci
     red: 'mistyrose', // WSJ
     dred: 'lightcoral', // WSJ opinion
-    green: 'honeydew', // Bloomberg, MW, Forbes, Barron's (no RSS)
+    green: '#d6ffd6', // Bloomberg, MW, Forbes, Barron's (no RSS)
     purple: 'lavender', // Blog posts
     orange: 'oldlace', // Soft sci
+
 }
 
 // Some shortcuts for sourcing
@@ -298,9 +297,25 @@ const sources = {
         'SCOTUSblog',
         colors.white,
     ),
+    cs: {
+        hn: new Source(
+            'https://hnrss.org/frontpage', //'https://news.ycombinator.com/rss',
+            'Hacker News',
+            colors.orange,
+        ),
+        ars: new Source(
+            'http://feeds.arstechnica.com/arstechnica/index/',
+            'Ars Technica',
+            colors.orange,
+        ),
+        lwn: new Source(
+            'https://lwn.net/headlines/newrss',
+            'LWN',
+            colors.purple,
+        )
+    }
     // TODO: AAAS? zbMATH is cloudflare blocked
-    // SCOTUS blog: https://www.scotusblog.com/feed/
-    // Hacker News, more techy: https://news.ycombinator.com/item?id=16908241
+    // https://news.ycombinator.com/item?id=16908241
     // Tangle?
 };
 var safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
@@ -311,102 +326,34 @@ sources.onion.postproc = limn(1);
 sources.wiki.home.postproc = last;
 sources.wiki.potd.postproc = last;
 sources.wsj.opn.color = colors.dred;
+sources.cs.hn.postproc = (l => l.map(e => {
+    var el = elem('div');
+    el.innerHTML = e.pieced;
+
+    var setartl = elem('a');
+    setartl.textContent = 'Article.';
+    setartl.href = el.childNodes[0].childNodes[1].href;
+
+    var setcom = elem('a');
+    setcom.textContent = 'Comments.';
+    setcom.href = el.childNodes[2].childNodes[1].href;
+    e.piecel = setcom.href;
+
+    e.pieced = setartl.outerHTML + "<br>"
+        + setcom.outerHTML
+        + el.childNodes[4].outerHTML
+        + el.childNodes[6].outerHTML;
+    return e;
+}));
+sources.scotus.postproc = (l => l.map(e => {
+    var descr = petty_line(get(e.raw, 'encoded'))
+    var ind = descr.substring(1).indexOf('<p>');
+    descr = descr.substring(0, (ind != -1 ? ind : descr.length));
+    e.pieced = descr;
+    return e;
+}));
 
 const LAYS = {
-    main: new Layout('Main', [
-        new View([
-            new Feed('economy', [
-                sources.wsj.markets,
-                sources.wsj.usbiz,
-                sources.nyt.econ,
-                sources.econ.econ,
-                sources.ebsco.forbes,
-                sources.ebsco.bloom,
-                sources.mw.rt,
-                sources.mw.brk,
-                sources.mw.urt,
-            ]),
-            new Feed('headlines', [
-                sources.wsj.pol,
-                sources.wsj.usn,
-                sources.wsj.opn,
-                sources.wsj.world,
-                sources.nyt.world,
-                sources.nyt.us,
-                sources.nyt.hth,
-                sources.wsj.health,
-                sources.hill.news,
-                sources.csp.wtd,
-                sources.onion,
-            ]),
-            new Feed('science', [
-                sources.pubmed.jnls,
-                sources.sciam.all,
-                sources.sciam.news,
-                sources.physorg.phys,
-                sources.physorg.space,
-                sources.nasa.iotd,
-                //sources.nyt.space,
-            ]),
-        ]),
-        new View([
-            new Feed('in the news', [
-                sources.wsj.pol,
-                sources.wsj.usn,
-                sources.wsj.opn,
-                sources.wsj.world,
-                sources.nyt.world,
-                sources.nyt.us,
-                sources.nyt.hth,
-                sources.wsj.health,
-                sources.hill.news,
-                sources.csp.wtd,
-                sources.wsj.markets,
-                sources.wsj.usbiz,
-                sources.nyt.econ,
-                sources.econ.econ,
-                sources.ebsco.forbes,
-                sources.ebsco.bloom,
-                sources.mw.rt,
-                sources.mw.brk,
-                sources.mw.urt,
-                sources.onion,
-                sources.pbs.hdl,
-                sources.pbs.pol,
-            ]),
-            new Feed('science', [
-                sources.pubmed.jnls,
-                sources.sciam.all,
-                sources.sciam.news,
-                sources.physorg.phys,
-                sources.physorg.space,
-                sources.nasa.iotd,
-            ]),
-        ], bkd = [2, 1]),
-    ]),
-    fin: new Layout('Financials', [
-        new View([
-            new Feed('headlines & macro', [
-                sources.mw.brk,
-                sources.wsj.markets,
-                sources.wsj.econ,
-                sources.nyt.econ,
-                sources.econ.econ,
-                sources.barr.pod,
-            ]),
-            new Feed('tech & business', [
-                sources.wsj.usbiz,
-                sources.wsj.tech,
-                sources.econ.biz,
-                sources.nyt.tech,
-                sources.ebsco.forbes,
-                sources.ebsco.bloom,
-                sources.mw.rt,
-                sources.mw.urt,
-                sources.yahoo.fin,
-            ]),
-        ]),
-    ]),
     pol: new Layout('Politics', [
         new View([
             new Feed('left', [
@@ -432,6 +379,7 @@ const LAYS = {
                 sources.wsj.usn,
                 sources.econ.biz,
                 sources.econ.fx,
+                sources.scotus,
             ]),
             new Feed('right', [
                 sources.wsj.opn,
@@ -439,6 +387,7 @@ const LAYS = {
         ]),
         new View([
             new Feed('less biased', [
+                sources.scotus,
                 sources.pbs.hdl,
                 sources.pbs.pol,
                 sources.politico.cong,
@@ -455,6 +404,7 @@ const LAYS = {
                 sources.wsj.usn,
                 sources.econ.biz,
                 sources.econ.fx,
+                sources.scotus,
             ]),
             new Feed('more biased', [
                 sources.wsj.opn,
@@ -482,19 +432,50 @@ const LAYS = {
                 sources.wsj.pol,
                 sources.wsj.health,
                 sources.wsj.usn,
+                sources.scotus,
             ]),
         ]),
     ]),
-    sci: new Layout('Science', [
+    fin: new Layout('Financials', [
+        new View([
+            new Feed('the economist', [
+                sources.econ.econ,
+                sources.econ.fx,
+            ]),
+            new Feed('headlines & macro', [
+                sources.mw.brk,
+                sources.wsj.markets,
+                sources.wsj.econ,
+                sources.nyt.econ,
+                sources.barr.pod,
+            ]),
+            new Feed('businesses', [
+                sources.wsj.usbiz,
+                sources.wsj.tech,
+                sources.econ.biz,
+                sources.nyt.tech,
+                sources.ebsco.forbes,
+                sources.ebsco.bloom,
+                sources.mw.rt,
+                sources.mw.urt,
+                sources.yahoo.fin,
+            ]),
+        ]),
+    ]),
+    sci: new Layout('Nerdy', [
         new View([
             new Feed('mainstream', [
                 sources.sciam.all,
                 sources.sciam.news,
                 sources.sciam.space,
                 sources.sciam.basic,
-                //sources.nyt.space,
                 sources.nasa.iotd,
                 sources.nasa.news,
+                sources.cs.ars,
+            ]),
+            new Feed('software', [
+                sources.cs.hn,
+                sources.cs.lwn,
             ]),
             new Feed('middle ground', [
                 sources.wp.tt,
@@ -527,3 +508,4 @@ const LAYS = {
         ]),
     ]),
 };
+LAYS.fin.postproc = (l => l.map(e => ({ ...e, 'media': (e.mediat == 'img' ? null : e.media) })));

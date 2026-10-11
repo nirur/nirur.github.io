@@ -35,7 +35,7 @@ function petty_line(ln) {
     ln = DOMPurify.sanitize(ln);
     return ln;
 }
-function petty_elm(elm, sc) {
+function petty_elm(elm) {
     var dt = elm.dt;
     var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -43,25 +43,25 @@ function petty_elm(elm, sc) {
     var pdt = `${days[dt.getDay()]}, ${dt.getDate()} ${months[dt.getMonth()]} '${dt.getFullYear() % 100}, ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
 
     var media = '';
-    if (elm.img) {
+    if (elm.media) {
         var typ;
-        if (elm.imgt?.startsWith('audio')) {
+        if (elm.mediat?.startsWith('audio')) {
             typ = 'audio controls';
         } else {
             typ = 'img';
         }
-        media = `<${typ} src=${elm.img} loading="lazy"></${typ}>`;
+        media = `<${typ} src=${elm.media} loading="lazy"></${typ}>`;
     }
     var ret = elem('div');
     ret.classList = 'card';
-    ret.style.backgroundColor = sc.color;
+    ret.style.backgroundColor = elm.color;
     ret.onclick = (() => window.open(elm.piecel));
     ret.innerHTML = `
     <div class='t_h'>${elm.piece}</div>
  ` + media + `
     <p>${elm.pieced}</p>
     <p>${pdt}</p>
-    <p>${sc.name}</p>
+    <p>${elm.series}</p>
 `;
     return ret;
 }
@@ -73,25 +73,30 @@ function petty_nav(name, sel, ttl) {
 }
 
 function algo(time, rank) {
-    // higher is better
+    // HIGHER IS BETTER
+
     const push = 86_400_000; // 7_200_000
     return time - rank * push;
-    // Hacker News algo:
-    //return (-rank - 1) * ((Date.now() - time) / 3_600_000 + 2) ** 0.56
+
+    // Modified Hacker News
+    // return (1 / (rank + 2)) * ((Date.now() - time) / 3_600_000 + 2) ** -1.8
 }
 
-function info(el) {
-    var imgp = getr(el, 'enclosure, content');
-    if (imgp?.textContent.includes("Terry"))
-        imgp = null;
+function info(el, sc) {
+    var mediap = getr(el, 'enclosure, content');
+    if (mediap?.textContent.includes("Terry"))
+        mediap = null;
     return {
         piece: petty_line(get(el, 'title')),
-        pieced: petty_line(get(el, 'description, content, summary')),
+        pieced: petty_line(get(el, 'description, encoded, summary')),
         piecel: petty_line(get(el, 'link') || getr(el, 'link')?.getAttribute('href')),
-        img: imgp?.getAttribute('url'),
-        imgt: imgp?.getAttribute('type'),
+        media: mediap?.getAttribute('url'),
+        mediat: (mediap?.getAttribute('type')?.startsWith('audio') ? 'audio' : 'img'),
         dt: new Date(get(el, 'pubDate, updated')),
         guid: get(el, 'guid'),
+        series: sc.name,
+        color: sc.color,
+        raw: el,
     }
 }
 
@@ -107,7 +112,6 @@ async function rote_fetch(url) {
     res = await res.text();
     return res;
 }
-
 function cached_fetch(url) {
     if (CACHE[url] == undefined) {
         // no await to ensure no repeats
@@ -116,24 +120,29 @@ function cached_fetch(url) {
     return CACHE[url];
 }
 
-async function coll_source(sc) {
+async function coll_source(sc, rules = []) {
+    rules = [...rules, sc.postproc];
     var res = await cached_fetch(sc.url);
     if (res == null)
         return [];
     res = parse(res);
     res = res.querySelectorAll('item, entry')
         .values()
-        .map(info)
+        .map(e => info(e, sc))
         .filter(e => (
             (e.piece != 'No records found')
             && (!e.piece.startsWith('Alert Run Date'))
         ));
     res = deiter(res);
-    res = sc.postproc(res);
-    res = res.map(e => [e.dt, e.guid, petty_elm(e, sc)]);
+    for (var rule of rules) {
+        if (rule != undefined)
+            res = rule(res);
+    }
+    res = res.map(e => [e.dt.getTime(), e.guid, petty_elm(e)]);
     return res;
 }
-async function coll_feed(feed, ELEM) {
+async function coll_feed(feed, ELEM, rules = []) {
+    rules = [...rules, feed.postproc];
     var sources = feed.sources;
     var ogs = sources.map(sc => (new URL(sc.url)).origin);
     var scs = new Set(ogs);
@@ -149,49 +158,54 @@ async function coll_feed(feed, ELEM) {
 
     var added = [];
     Object.values(obj).map(async scg => {
-        var ls = scg.map(coll_source);
+        var ls = scg.map(sc => coll_source(sc, rules));
         ls = await Promise.all(ls);
         ls = ls.filter(l => l.length > 0);
         ls = ls.flatMap(l =>
             l.map((e, r) =>
-                [algo(e[0].getTime(), r), e[1], e[2]]
+                [algo(e[0], r), e]
             )
         );
         ls.sort();
 
         var st = new Set();
-        ls_red = [];
+        var ls_red = [];
         ls.forEach(v => {
-            if (!st.has(v[1])) {
-                st.add(v[1]);
-                ls_red.push([v[0], v[2]]);
+            if (!st.has(v[1][1])) {
+                st.add(v[1][1]);
+                ls_red.push([v[1][0], v[1][2]]);
             }
         });
         ls_red.reverse();
+        ls = ls_red.map((e, r) => [algo(e[0], r), e[1]]);
+        ls.sort();
+        ls.reverse();
+
         // crude chop:
-        ls_red = ls_red.slice(0, Math.min(ls_red.length, LIM));
-        if (ls_red.length == 0)
+        ls = ls.slice(0, Math.min(ls.length, LIM));
+        if (ls.length == 0)
             return;
 
         ist = (i, j) => {
-            ELEM.insertBefore(ls_red[j][1], added[i][1]);
-            added.splice(i, 0, ls_red[j]);
+            ELEM.insertBefore(ls[j][1], added[i][1]);
+            added.splice(i, 0, ls[j]);
         }
         var j = 0;
         for (var i = 0; i < added.length; i++) // don't simplify line
-            if (added[i][0] < ls_red[j][0]) {
+            if (added[i][0] < ls[j][0]) {
                 ist(i, j);
                 j++;
-                if (j >= ls_red.length)
+                if (j >= ls.length)
                     break;
             }
-        for (var k = j; k < ls_red.length; k++) { // not simplifiable
-            ELEM.appendChild(ls_red[k][1]);
-            added.push(ls_red[k]);
+        for (var k = j; k < ls.length; k++) { // not simplifiable
+            ELEM.appendChild(ls[k][1]);
+            added.push(ls[k]);
         }
     });
 }
-async function coll_view(view, ns = [], ELEM) {
+async function coll_view(view, ns = [], ELEM, rules = []) {
+    rules = [...rules, view.postproc];
     var ret = elem('div');
     ret.classList = 'view';
     ns.forEach(n => ret.classList.add(`scrn${n}`));
@@ -202,7 +216,7 @@ async function coll_view(view, ns = [], ELEM) {
         fd.classList = 'feed';
         fd.style.flex = view.bkd[i];
         ret.appendChild(fd);
-        return coll_feed(e, fd);
+        return coll_feed(e, fd, rules);
     }));
 }
 async function collect(lay, ELEM) {
@@ -211,13 +225,15 @@ async function collect(lay, ELEM) {
     var i = 3;
     for (var j in views) {
         var ln = views[j].feeds.length;
+        ln = (ln <= 3 ? ln : 3);
         var ls = [];
         for (; i >= ln; i--)
             ls.push(i);
         clss.push(ls);
     }
 
-    views.forEach((v, i) => coll_view(v, clss[i], ELEM));
+    var rules = [lay.postproc];
+    views.forEach((v, i) => coll_view(v, clss[i], ELEM, rules));
 }
 
 window.onload = (() => {
