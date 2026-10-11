@@ -40,18 +40,18 @@ html {
     flex-direction: row;
 }
 
-@media (width < 900px) {
+@media (width < 1050px) {
     #chv {
         flex-direction: column;
     }
 }
-@media (width >= 900px) {
+@media (width >= 1050px) {
     #chv {
         flex-direction: row;
     }
 }
 
-@media (width < 700px) {
+@media (width < 775px) {
     .view:not(.scrn1) {
         display: none;
     }
@@ -60,7 +60,7 @@ html {
         margin: 0px 8px;
     }
 }
-@media (width >= 700px) and (width < 900px) {
+@media (width >= 775px) and (width < 1050px) {
     .view:not(.scrn2) {
         display: none;
     }
@@ -69,7 +69,7 @@ html {
         margin: 0px 8px;
     }
 }
-@media (width >= 900px) and (width < 1450px) {
+@media (width >= 1050px) and (width < 1450px) {
     .view:not(.scrn3) {
         display: none;
     }
@@ -101,6 +101,10 @@ html {
     max-height: 250px;
     max-width: 90%;
     width: auto;
+}
+
+#content audio {
+    width: 100%;
 }
 
 .feed {

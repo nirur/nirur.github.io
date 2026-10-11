@@ -106,7 +106,7 @@ footer {
     color: var(--bright-white);
 }
 
-@media (width < 900px) {
+@media (width < 1050px) {
     body {
         flex-direction: column;
         /*font-size: large;*/
@@ -118,7 +118,7 @@ footer {
         display: none;
     }
 }
-@media (width >= 900px) {
+@media (width >= 1050px) {
     body {
         flex-direction: row;
     }

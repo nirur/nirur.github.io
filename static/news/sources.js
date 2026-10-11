@@ -1,8 +1,9 @@
 const VMAX = 4;
 const POSTPROC = (l => l.slice(0, Math.min(l.length, 20)));
+const GRAV = 0.4;
 
 class Source {
-    weight = 1;
+    gravity = GRAV;
     constructor(url, name, color) {
         this.url = url;
         this.name = name;
@@ -88,7 +89,7 @@ const sources = {
             arts: ['RSSArtsCulture', 'Arts & Culture'],
             estate: ['latestnewsrealestate', 'Estate'],
             pfin: ['RSSPersonalFinance', 'Personal finance'],
-            health: ['socialhealth', 'Health'],
+            hth: ['socialhealth', 'Health'],
             style: ['RSSStyle', 'Style'],
             sports: ['rsssportsfeed', 'Sports'],
         }
@@ -342,6 +343,7 @@ sources.onion.postproc = limn(1);
 sources.wiki.home.postproc = last;
 sources.wiki.potd.postproc = last;
 sources.wsj.opn.color = colors.dred;
+sources.wsj.gravity = GRAV / 2;
 sources.cs.hn.postproc = (l => l.map(e => {
     var el = elem('div');
     el.innerHTML = e.pieced;
@@ -376,7 +378,6 @@ const LAYS = {
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
-                sources.nyt.hth,
             ]),
             new Feed('center (ish)', [
                 sources.hill.news,
@@ -387,12 +388,11 @@ const LAYS = {
             ]),
             new Feed('spread', [
                 sources.nyt.home,
-                //sources.pbs.hdl, // lower quality
-                //sources.pbs.pol, // lower quality
+                sources.pbs.hdl,
+                sources.pbs.pol,
                 sources.wsj.world,
                 sources.wsj.usbiz,
                 sources.wsj.pol,
-                sources.wsj.health,
                 sources.wsj.usn,
                 sources.politico.cong,
                 sources.politico.def,
@@ -423,17 +423,18 @@ const LAYS = {
                 sources.wsj.world,
                 sources.wsj.usbiz,
                 sources.wsj.pol,
-                sources.wsj.health,
                 sources.wsj.usn,
                 sources.econ.biz,
                 sources.econ.fx,
+                sources.pbs.hdl,
+                sources.pbs.pol,
+                sources.nyt.home,
             ]),
             new Feed('more biased', [
                 sources.wsj.opn,
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
-                sources.nyt.hth,
                 sources.bul,
             ]),
         ], [1, 1, 1]),
@@ -443,7 +444,6 @@ const LAYS = {
                 sources.hill.news,
                 sources.hill.biz,
                 sources.csp.wtd,
-                sources.scotus,
                 sources.politico.cong,
                 sources.politico.def,
                 sources.politico.pol,
@@ -451,42 +451,22 @@ const LAYS = {
                 sources.wsj.world,
                 sources.wsj.usbiz,
                 sources.wsj.pol,
-                sources.wsj.health,
                 sources.wsj.usn,
                 sources.econ.biz,
                 sources.econ.fx,
                 sources.cfr,
+                sources.pbs.hdl,
+                sources.pbs.pol,
+                sources.nyt.home,
             ]),
             new Feed('higher bias', [
                 sources.wsj.opn,
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
-                sources.nyt.hth,
                 sources.bul,
             ]),
         ], [2, 1]),
-        new View([
-            new Feed(null, [
-                sources.pbs.hdl,
-                sources.pbs.pol,
-                sources.econ.biz,
-                sources.econ.fx,
-                sources.politico.cong,
-                sources.politico.def,
-                sources.politico.pol,
-                sources.politico.hth,
-                sources.hill.news,
-                sources.hill.biz,
-                sources.csp.wtd,
-                sources.wsj.world,
-                sources.wsj.usbiz,
-                sources.wsj.pol,
-                sources.wsj.health,
-                sources.wsj.usn,
-                sources.scotus,
-            ]),
-        ]),
     ]),
     fin: new Layout('Financials', [
         new View([
@@ -542,7 +522,6 @@ const LAYS = {
         ]),
         new View([
             new Feed('news', [
-                //sources.sciam.all, // lower quality
                 sources.nasa.iotd,
                 sources.nasa.news,
                 sources.wp.tt,
@@ -561,7 +540,6 @@ const LAYS = {
         ]),
         new View([
             new Feed('light', [
-                //sources.sciam.all, // lower quality
                 sources.nasa.iotd,
                 sources.nasa.news,
                 sources.wp.tt,

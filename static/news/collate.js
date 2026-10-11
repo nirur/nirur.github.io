@@ -72,14 +72,15 @@ function petty_nav(name, sel, ttl) {
 </span>`;
 }
 
-function algo(time, rank) {
+function algo(el, rank) {
     // HIGHER IS BETTER
 
-    const push = 86_400_000; // 7_200_000
-    return time - rank * push;
+    //const push = 7_200_000; //86_400_000; // 7_200_000
+    //return time - rank * push;
 
     // Modified Hacker News
-    // return (1 / (rank + 2)) * ((Date.now() - time) / 3_600_000 + 2) ** -1.8
+    console.log(el);
+    return ((rank + 2) ** -0.5) * (((Date.now() - el.dt.getTime()) / 3_600_000) + 2) ** -el.weight
 }
 
 function info(el, sc) {
@@ -97,6 +98,7 @@ function info(el, sc) {
         series: sc.name,
         color: sc.color,
         raw: el,
+        weight: sc.gravity,
     }
 }
 
@@ -138,7 +140,7 @@ async function coll_source(sc, rules = []) {
         if (rule != undefined)
             res = rule(res);
     }
-    res = res.map(e => [e.dt.getTime(), e.guid, petty_elm(e)]);
+    //res = res.map(e => [e.dt.getTime(), e.guid, petty_elm(e)]);
     return res;
 }
 async function coll_feed(feed, ELEM, rules = []) {
@@ -161,25 +163,31 @@ async function coll_feed(feed, ELEM, rules = []) {
         var ls = scg.map(sc => coll_source(sc, rules));
         ls = await Promise.all(ls);
         ls = ls.filter(l => l.length > 0);
-        ls = ls.flatMap(l =>
-            l.map((e, r) =>
-                [algo(e[0], r), e]
-            )
-        );
-        ls.sort();
+        ls = ls.flatMap(l => l.map((e, r) => [algo(e, r), e]));
 
-        var st = new Set();
-        var ls_red = [];
+        var st = {};
         ls.forEach(v => {
-            if (!st.has(v[1][1])) {
-                st.add(v[1][1]);
-                ls_red.push([v[1][0], v[1][2]]);
+            var key = v[1].guid;
+            var value = [v[0], v[1]];
+            if (st[key] == undefined) {
+                st[key] = value;
+            } else {
+                st[key][0] += value[0];
             }
         });
-        ls_red.reverse();
-        ls = ls_red.map((e, r) => [algo(e[0], r), e[1]]);
+
+        ls = Object.values(st);
         ls.sort();
         ls.reverse();
+        ls = ls.map((e, r) => {
+            e = e[1];
+            e.weight = GRAV;
+            return [algo(e, r), e];
+        });
+        ls.sort();
+        ls.reverse();
+        ls.forEach(e => { console.log(e[0]); console.log(e[1].piece) })
+        ls = ls.map(v => [v[0], petty_elm(v[1])]);
 
         // crude chop:
         if (ls.length == 0)
