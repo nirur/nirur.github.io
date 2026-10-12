@@ -398,6 +398,7 @@ const LAYS = {
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
+                sources.nyt.home,
             ]),
             new Feed('center (ish)', [
                 sources.hill.news,
@@ -408,7 +409,6 @@ const LAYS = {
                 sources.btp,
             ]),
             new Feed('spread', [
-                sources.nyt.home,
                 sources.pbs.hdl,
                 sources.pbs.pol,
                 sources.wsj.world,
@@ -450,10 +450,10 @@ const LAYS = {
                 sources.econ.fx,
                 sources.pbs.hdl,
                 sources.pbs.pol,
-                sources.nyt.home,
             ]),
             new Feed('more biased', [
                 sources.wsj.opn,
+                sources.nyt.home,
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
@@ -479,11 +479,11 @@ const LAYS = {
                 sources.cfr,
                 sources.pbs.hdl,
                 sources.pbs.pol,
-                sources.nyt.home,
                 sources.btp,
             ]),
             new Feed('higher bias', [
                 sources.wsj.opn,
+                sources.nyt.home,
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
