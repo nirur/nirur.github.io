@@ -366,21 +366,25 @@ sources.cs.hn.postproc = (l => l.map(e => {
     var el = elem('div');
     el.innerHTML = e.pieced;
 
-    var setartl = elem('a');
-    setartl.textContent = 'Article.';
-    setartl.href = el.childNodes[0].childNodes[1].href;
+    try {
+        var setartl = elem('a');
+        setartl.textContent = 'Article.';
+        setartl.href = el.childNodes[0].childNodes[1].href;
 
-    var setcom = elem('a');
-    setcom.textContent = 'Comments.';
-    setcom.href = el.childNodes[2].childNodes[1].href;
-    e.piecel = setcom.href;
+        var setcom = elem('a');
+        setcom.textContent = 'Comments.';
+        setcom.href = el.childNodes[2].childNodes[1].href;
+        e.piecel = setcom.href;
 
-    e.pieced = setartl.outerHTML + "<br>"
-        + setcom.outerHTML
-        + el.childNodes[4].outerHTML
-        + el.childNodes[6].outerHTML;
-    return e;
-}));
+        e.pieced = setartl.outerHTML + "<br>"
+            + setcom.outerHTML
+            + el.childNodes[4].outerHTML
+            + el.childNodes[6].outerHTML;
+        return e;
+    } catch (ex) {
+        return null;
+    }
+}).filter(e => (e != null)));
 sources.scotus.postproc = (l => l.map(e => {
     var descr = petty_line(get(e.raw, 'encoded'))
     var ind = descr.indexOf('</p>');
