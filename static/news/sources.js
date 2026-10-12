@@ -291,6 +291,20 @@ const sources = {
             p_intl: ['international', 'International'],
         }
     }),
+    /*ktn: c1({
+        /*
+         * Kill the Newsletter! turns email newsletters into atom feeds.
+         * To edit settings or delete a feed, delete the '.xml' at the end of
+         * one of the feed urls, and you'll get the info page. This also gives
+         * you the email with which to subscribe to various sources.
+         * /
+        name: 'KtN',
+        url: (w => `https://kill-the-newsletter.com/feeds/${w}.xml`),
+        color: colors.yellow,
+        main: {
+            blt: ['3rv538bl1bbmkokdxdn8shjtvpyl71cqzl48p6sx', 'BallotPedia'],
+        }
+    }),*/
     onion: new Source(
         'https://theonion.com/feed/',
         "The Onion",
@@ -327,7 +341,12 @@ const sources = {
         'https://www.thebulwark.com/feed',
         'The Bulwark',
         colors.purple,
-    )
+    ),
+    btp: new Source(
+        'https://news.ballotpedia.org/feed/',
+        'BallotPedia',
+        colors.yellow,
+    ),
     // TODO: AAAS? zbMATH is cloudflare blocked
     // https://news.ycombinator.com/item?id=16908241
     // Tangle? Paywalled
@@ -343,7 +362,6 @@ sources.onion.postproc = limn(1);
 sources.wiki.home.postproc = last;
 sources.wiki.potd.postproc = last;
 sources.wsj.opn.color = colors.dred;
-sources.wsj.gravity = GRAV / 2;
 sources.cs.hn.postproc = (l => l.map(e => {
     var el = elem('div');
     el.innerHTML = e.pieced;
@@ -371,6 +389,8 @@ sources.scotus.postproc = (l => l.map(e => {
     return e;
 }));
 
+sources.wsj.gravity = GRAV / 2;
+
 const LAYS = {
     pol: new Layout('Politics', [
         new View([
@@ -385,6 +405,7 @@ const LAYS = {
                 sources.csp.wtd,
                 sources.scotus,
                 sources.cfr,
+                sources.btp,
             ]),
             new Feed('spread', [
                 sources.nyt.home,
@@ -400,7 +421,7 @@ const LAYS = {
                 sources.politico.hth,
                 sources.econ.biz,
                 sources.econ.fx,
-                sources.bul,
+                //sources.bul,
             ]),
             new Feed('right', [
                 sources.wsj.opn,
@@ -414,6 +435,7 @@ const LAYS = {
                 sources.csp.wtd,
                 sources.scotus,
                 sources.cfr,
+                sources.btp,
             ]),
             new Feed('medium', [
                 sources.politico.cong,
@@ -435,7 +457,7 @@ const LAYS = {
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
-                sources.bul,
+                //sources.bul,
             ]),
         ], [1, 1, 1]),
         new View([
@@ -458,13 +480,14 @@ const LAYS = {
                 sources.pbs.hdl,
                 sources.pbs.pol,
                 sources.nyt.home,
+                sources.btp,
             ]),
             new Feed('higher bias', [
                 sources.wsj.opn,
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
-                sources.bul,
+                //sources.bul,
             ]),
         ], [2, 1]),
     ]),
