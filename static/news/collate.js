@@ -79,7 +79,6 @@ function algo(el, rank) {
     //return time - rank * push;
 
     // Modified Hacker News
-    console.log(el);
     return ((rank + 2) ** -0.5) * (((Date.now() - el.dt.getTime()) / 3_600_000) + 2) ** -el.weight
 }
 
@@ -186,7 +185,6 @@ async function coll_feed(feed, ELEM, rules = []) {
         });
         ls.sort();
         ls.reverse();
-        ls.forEach(e => { console.log(e[0]); console.log(e[1].piece) })
         ls = ls.map(v => [v[0], petty_elm(v[1])]);
 
         // crude chop:
