@@ -57,12 +57,13 @@ const colors = {
 // Some shortcuts for sourcing
 function c1(jn) {
     rep = {};
+    var m = jn.name;
     for (sc in jn.main) {
-        info = jn.main[sc];
-        u = info[0], n = info[info.length - 1];
+        var info = jn.main[sc];
+        var n = info[info.length - 1];
         rep[sc] = new Source(
             jn.url(info[0]),
-            (n ? `${jn.name} > ${n}` : jn.name),
+            ((m && n) ? `${m} > ${n}` : (m || n)),
             jn.color,
         );
     }
@@ -347,6 +348,92 @@ const sources = {
         'BallotPedia',
         colors.yellow,
     ),
+    local: {
+        patch: new Source(
+            'https://kill-the-newsletter.com/feeds/tuvi8646se065dtrlmcakd7xplfr02yd5kvmtp37.xml',
+            'KtN > Patch',
+            colors.green,
+        ),
+        lcgov: new Source(
+            'https://kill-the-newsletter.com/feeds/0xefh9uf7am1nzelvw3t192cminnustw0iofh8nr.xml',
+            'KtN > Cupertino.gov, SanJoseCA.gov',
+            colors.white,
+        ),
+        tino: c1({
+            name: 'Cupertino',
+            url: (w => `https://cupertino${w}/feed`),
+            color: colors.blue,
+            main: {
+                ctd: ['today.com', 'Cupertino Today'],
+                cm: ['matters.org', 'Cupertino Matters'],
+                cf: ['facts.org', 'Cupertino Facts'],
+            }
+        }),
+        cities: c1({
+            name: 'Nearby',
+            url: (w => `https://${w}.com/feed`),
+            color: colors.green,
+            main: {
+                mv: ['www.mv-voice', 'Mountain View Voice'],
+                sv: ['www.svvoice', 'Silicon Valley Voice'],
+                pa: ['padailypost', 'Palo Alto Daily Post'],
+                rw: ['www.rwcpulse', 'Redwood City Pulse'],
+                lg: ['losgatan', 'Los Gatan'],
+                pao: ['www.paloaltoonline', 'Palo Alto Online'],
+                kron: ['www.kron4', 'KRON4'],
+            }
+        }),
+        sj: c1({
+            name: 'San Jose',
+            url: (w => `https://${w}.com/feed`),
+            color: colors.green,
+            main: {
+                s: ['sanjosespotlight', 'San Jose Spotlight'],
+                i: ['www.sanjoseinside', 'San Jose Inside'],
+            }
+        }),
+        sfgate: new Source(
+            'https://www.sfgate.com/rss/feed/Top-News-Stories-595.php',
+            'SFGATE',
+            colors.red,
+        ),
+        sfist: new Source(
+            'https://sfist.com/rss/',
+            'SFist',
+            colors.red,
+        ),
+        cal: c1({
+            name: 'CA',
+            url: (w => `https://${w}.org/feed`),
+            color: colors.yellow,
+            main: {
+                cm: ['calmatters', 'CalMatters'],
+                kq: ['ww2.kqed', 'KQED'],
+                sb: ['cal.streetsblog', 'StreetsBlog'],
+            }
+        }),
+        lao: c1({
+            name: 'Legislative Analyst\'s Office',
+            url: (w => `https://lao.ca.gov/laoapp/rss/LAORSSFeedNew.aspx?laofeed=${w}`),
+            color: colors.purple,
+            main: {
+                3: [3, null],
+                4: [4, null],
+                5: [5, null],
+                7: [7, null],
+                8: [8, null],
+                9: [9, null],
+                10: [10, null],
+                11: [11, null],
+                12: [12, null],
+                13: [13, null],
+                14: [14, null],
+                15: [15, null],
+                21: [21, null],
+                25: [25, null],
+            }
+        })
+    },
     // TODO: AAAS? zbMATH is cloudflare blocked
     // https://news.ycombinator.com/item?id=16908241
     // Tangle? Paywalled
@@ -580,6 +667,82 @@ const LAYS = {
                 sources.physorg.chem,
                 sources.physorg.bio,
             ]),
+        ]),
+    ]),
+    local: new Layout('Local', [
+        new View([
+            new Feed('community', [
+                sources.local.tino.ctd,
+                sources.local.tino.cm,
+                sources.local.tino.cf,
+                sources.local.patch,
+            ]),
+            new Feed('government', [
+                sources.local.lcgov,
+            ].concat(
+                (() => {
+                    var ls = [21, 25];
+                    for (i = 3; i <= 15; i++)
+                        if (i != 6)
+                            ls.push(i);
+                    ls = ls.map(n => sources.local.lao[n]);
+                    return ls;
+                })()
+            )),
+            new Feed('analysis', [
+                sources.local.sfgate,
+                sources.local.sfist,
+                sources.local.cal.cm,
+                sources.local.cal.kq,
+                sources.local.cal.sb,
+                sources.local.sj.i,
+                sources.local.sj.s,
+            ]),
+            new Feed('nearby', [
+                sources.local.cities.mv,
+                sources.local.cities.sv,
+                sources.local.cities.pa,
+                sources.local.cities.rw,
+                sources.local.cities.lg,
+                sources.local.cities.pao,
+                sources.local.cities.kron,
+            ]),
+        ], [1, 2, 2, 1]),
+        new View([
+            new Feed('community', [
+                sources.local.tino.ctd,
+                sources.local.tino.cm,
+                sources.local.tino.cf,
+                sources.local.patch,
+                sources.local.cities.mv,
+                sources.local.cities.sv,
+                sources.local.cities.pa,
+                sources.local.cities.rw,
+                sources.local.cities.lg,
+                sources.local.cities.pao,
+                sources.local.cities.kron,
+            ]),
+            new Feed('analysis', [
+                sources.local.sfgate,
+                sources.local.sfist,
+                sources.local.cal.cm,
+                sources.local.cal.kq,
+                sources.local.cal.sb,
+                sources.local.sj.i,
+                sources.local.sj.s,
+            ]),
+            new Feed('government', [
+                sources.local.lcgov,
+            ].concat(
+                (() => {
+                    var ls = [21, 25];
+                    for (i = 3; i <= 15; i++)
+                        if (i != 6)
+                            ls.push(i);
+                    ls = ls.map(n => sources.local.lao[n]);
+                    return ls;
+                })()
+            )),
         ]),
     ]),
 };
