@@ -707,7 +707,7 @@ const LAYS = {
                 sources.local.cities.pao,
                 sources.local.cities.kron,
             ]),
-        ], [1, 2, 2, 1]),
+        ]),
         new View([
             new Feed('community', [
                 sources.local.tino.ctd,
