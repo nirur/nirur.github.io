@@ -67,9 +67,9 @@ function petty_elm(elm) {
 }
 function petty_nav(name, sel, ttl) {
     return `
-<span${sel ? ' id="vws"' : ''} class='hide' onClick='openview("${name}")' >
+<a${sel ? ' id="vws"' : ''} class='hide' href='news?page=${name}' >
     ${ttl}
-</span>`;
+</a>`;
 }
 
 function algo(el, rank) {

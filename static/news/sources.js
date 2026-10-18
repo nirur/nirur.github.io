@@ -434,12 +434,22 @@ const sources = {
             }
         })
     },
-    // TODO: AAAS? zbMATH is cloudflare blocked
-    // https://news.ycombinator.com/item?id=16908241
-    // Tangle? Paywalled
-    // DO NOT put Newsweek here. See Ad Fontes' ratings of their various
-    // articles, and read the explanations. They use AI without disclosing it,
-    // and the AI tends to make mistakes. They also don't disclose corrections.
+    /* TODO:
+     *  - AAAS / science.org
+     *  - 
+     *
+     * Decided against:
+     *  - zbMATH is CloudFlare blocked
+     *  - BBC paywalled
+     *    paywall can be circumvented by disabling JS, but this is unethical.
+     *  - Tangle paywalled
+     *  - Newsweek unreliable
+     *    See Ad Fontes' ratings of their various articles,
+     *    and read the explanations. They use AI without disclosing it,
+     *    and the AI tends to make mistakes. They also don't disclose corrections.
+     *  - Independent biased
+     *  Went thru https://news.ycombinator.com/item?id=16908241
+     */
 };
 var safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
 var limn = (n => (ls => safesl(ls, n)));
