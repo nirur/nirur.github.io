@@ -8,6 +8,9 @@ title: News
 <script src="/static/news/collate.js"></script>
 <link rel="stylesheet" href="/static/news/fancy.css" />
 <script>
+    document.querySelector('#content').classList.add('blanklk');
+</script>
+<script>
     function flipN() {
         document.querySelectorAll("#chv > *:not(.hamb)")
             .forEach(v => v.classList.toggle('hide'));

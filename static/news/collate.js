@@ -52,10 +52,11 @@ function petty_elm(elm) {
         }
         media = `<${typ} src=${elm.media} loading="lazy"></${typ}>`;
     }
-    var ret = elem('div');
+    var ret = elem('a');
     ret.classList = 'card';
     ret.style.backgroundColor = elm.color;
-    ret.onclick = (() => window.open(elm.piecel));
+    ret.href = elm.piecel;
+    //ret.onclick = (() => window.open(elm.piecel));
     ret.innerHTML = `
     <div class='t_h'>${elm.piece}</div>
  ` + media + `

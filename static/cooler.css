@@ -44,16 +44,19 @@ body {
     font-family: "Newsreader", "Georgia", serif;
 }
 
-a, a:visited, a:hover {
+a {
+    color: inherit;
+}
+
+a:not(:hover, :active) {
     text-decoration: none;
+}
+
+:is(a, a:visited, a:hover):not(.blanklk *) {
     color: var(--link);
 }
 
-a:hover {
-    text-decoration: underline;
-}
-
-a:focus, a:active {
+:is(a:focus, a:active):not(.blanklk *) {
     color: var(--primary-soft);
 }
 
@@ -68,7 +71,6 @@ header h1 {
 
 .navy:not([hidden]) {
     font-family: "Source Code Pro", serif;
-    /*font-size: larger;*/
     flex-direction: column;
     display: flex;
 }
@@ -86,7 +88,7 @@ header h1 {
 }
 
 .navy * {
-    color: var(--bright-white) !important;
+    color: var(--bright-white);
     padding: 16px;
 }
 

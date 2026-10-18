@@ -27,10 +27,6 @@ html {
     padding: 16px;
 }
 
-#chv *:not(:hover) {
-    color: black;
-}
-
 #chv *:hover, #vws {
     background-color: dimgray;
     color: white;
@@ -129,11 +125,13 @@ html {
     padding: 16px;
     font-size: smaller;
     border-radius: 4px;
+    display: block;
 }
 
 .card:hover, .card:hover *, #vws {
     background-color: dimgray !important;
-    color: snow !important;
+    color: snow;
+    text-decoration: none;
 }
 
 .card .t_h {
