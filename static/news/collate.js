@@ -56,6 +56,8 @@ function petty_elm(elm) {
     ret.classList = 'card';
     ret.style.backgroundColor = elm.color;
     ret.href = elm.piecel;
+    ret.rel = "noopener noreferrer";
+    ret.target = "_blank";
     //ret.onclick = (() => window.open(elm.piecel));
     ret.innerHTML = `
     <div class='t_h'>${elm.piece}</div>
