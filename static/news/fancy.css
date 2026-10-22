@@ -99,7 +99,7 @@ html {
 
 #content img {
     max-height: 250px;
-    max-width: 90%;
+    max-width: min(90%, 200px);
     width: auto;
 }
 
@@ -109,6 +109,7 @@ html {
 
 .feed {
     margin: 4px;
+    min-width: 0;
 }
 
 .feedttl {
@@ -138,4 +139,8 @@ html {
     font-weight: bold;
     font-size: large;
     margin-bottom: 1em;
+}
+
+.card span {
+    display: block;
 }

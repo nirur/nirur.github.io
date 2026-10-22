@@ -29,11 +29,24 @@ function petty_line(ln) {
     ln = ln.trim();
     if (ln.startsWith('<![CDATA['))
         ln = ln.slice(9, -3);
+    ln = ln.trim();
     ln = ln.replaceAll('&amp;', '&')
         .replaceAll('&lt;', '<')
         .replaceAll('&gt;', '>');
     ln = DOMPurify.sanitize(ln);
     return ln;
+}
+function gmedia(elm) {
+    if (elm.media) {
+        var typ;
+        if (elm.mediat?.startsWith('audio')) {
+            typ = 'audio controls';
+        } else {
+            typ = 'img';
+        }
+        return `<${typ} src=${elm.media} loading="lazy"></${typ}>`;
+    }
+    return '';
 }
 function petty_elm(elm) {
     var dt = elm.dt;
@@ -42,30 +55,23 @@ function petty_elm(elm) {
     var pad = (n => (n < 10 ? '0' + n : n));
     var pdt = `${days[dt.getDay()]}, ${dt.getDate()} ${months[dt.getMonth()]} '${dt.getFullYear() % 100}, ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
 
-    var media = '';
-    if (elm.media) {
-        var typ;
-        if (elm.mediat?.startsWith('audio')) {
-            typ = 'audio controls';
-        } else {
-            typ = 'img';
-        }
-        media = `<${typ} src=${elm.media} loading="lazy"></${typ}>`;
-    }
+    var media = gmedia(elm);
     var ret = elem('a');
     ret.classList = 'card';
     ret.style.backgroundColor = elm.color;
-    ret.href = elm.piecel;
+    if (elm.piecel)
+        ret.href = elm.piecel;
     ret.rel = "noopener noreferrer";
     ret.target = "_blank";
-    //ret.onclick = (() => window.open(elm.piecel));
     ret.innerHTML = `
     <div class='t_h'>${elm.piece}</div>
  ` + media + `
     <p>${elm.pieced}</p>
-    <p>${pdt}</p>
-    <p>${elm.series}</p>
-`;
+    <p>
+` + (elm.auth ? `<span>${elm.auth}</span>` : '') + `
+    <span>${pdt}</span>
+    <span>${elm.series}</span>
+</p>`;
     return ret;
 }
 function petty_nav(name, sel, ttl) {
@@ -89,19 +95,35 @@ function info(el, sc) {
     var mediap = getr(el, 'enclosure, content');
     if (mediap?.textContent.includes("Terry"))
         mediap = null;
-    return {
+    var ret = {
         piece: petty_line(get(el, 'title')),
         pieced: petty_line(get(el, 'description, encoded, summary')),
         piecel: petty_line(get(el, 'link') || getr(el, 'link')?.getAttribute('href')),
         media: mediap?.getAttribute('url'),
         mediat: (mediap?.getAttribute('type')?.startsWith('audio') ? 'audio' : 'img'),
         dt: new Date(get(el, 'pubDate, updated')),
-        guid: get(el, 'guid'),
+        guid: petty_line(get(el, 'guid')),
         series: sc.name,
         color: sc.color,
         raw: el,
         weight: sc.gravity,
+        auth: el.querySelectorAll('creator').values().map(
+            e => petty_line(e.textContent)
+        ).join('; '),
+    };
+    if (sc.name.startsWith('C-SPAN')) {
+        ret.piecel = 'https://www.c-span.org/podcasts/subpage/?series='
+            + (s => {
+                if (s == 'Washington Today')
+                    return 'washingtonToday';
+                if (s == 'Ceasefire')
+                    return 'ceasefire';
+                if (s == 'Extreme Mortman')
+                    return 'ExtremeMortman';
+                throw new Error('You added a C-SPAN podcast without finding the linking series name.');
+            })(sc.name.slice(9)) + '&episode=' + ret.guid;
     }
+    return ret;
 }
 
 var CACHE = {};
@@ -142,7 +164,6 @@ async function coll_source(sc, rules = []) {
         if (rule != undefined)
             res = rule(res);
     }
-    //res = res.map(e => [e.dt.getTime(), e.guid, petty_elm(e)]);
     return res;
 }
 async function coll_feed(feed, ELEM, rules = []) {

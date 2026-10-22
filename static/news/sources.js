@@ -259,11 +259,11 @@ const sources = {
     }),
     wiki: c1({
         name: 'Wikipedia',
-        url: (w => w),
+        url: (w => `https://${w}.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom&language=en`),
         color: colors.orange,
         main: {
-            home: ['https://en.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom', 'Home'],
-            potd: ['https://commons.wikimedia.org/w/api.php?action=featuredfeed&feed=potd&feedformat=atom&language=en', 'PoTD']
+            home: ['en.wikipedia', 'Home'],
+            potd: ['commons.wikimedia', 'PoTD']
         }
     }),
     csp: c1({
