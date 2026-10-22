@@ -99,7 +99,7 @@ html {
 
 #content img {
     max-height: 250px;
-    max-width: min(90%, 200px);
+    max-width: min(90%, 400px);
     width: auto;
 }
 

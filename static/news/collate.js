@@ -32,7 +32,8 @@ function petty_line(ln) {
     ln = ln.trim();
     ln = ln.replaceAll('&amp;', '&')
         .replaceAll('&lt;', '<')
-        .replaceAll('&gt;', '>');
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"');
     ln = DOMPurify.sanitize(ln);
     return ln;
 }
@@ -123,6 +124,8 @@ function info(el, sc) {
                 throw new Error('You added a C-SPAN podcast without finding the linking series name.');
             })(sc.name.slice(9)) + '&episode=' + ret.guid;
     }
+    if (ret.pieced.includes('blockquote'))
+        ret.pieced = ret.pieced.slice(0, ret.pieced.indexOf('<blockquote'));
     return ret;
 }
 

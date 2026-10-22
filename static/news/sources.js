@@ -190,7 +190,7 @@ const sources = {
         main: {
             bloom: ['c2E6MTBjZjI4MzctMWJhNC00MzgwLTkyYmMtMTY1NjBkOTM1ODdh', 'Bloomberg'],
             forbes: ['c2E6NTYyMDM2MjAtYjk1MC00OGQ2LTgxNzYtOGI4MGQ3NThmNDE4', 'Forbes'],
-            // TODO: Atlantic
+            atl: ['c2E6NWIxODU0Y2EtNWU0Ni00MTFkLWFjOWEtZTJhZjk0OTM5NGRi', 'The Atlantic']
         }
     }),
     nasa: c1({
@@ -343,6 +343,11 @@ const sources = {
         'The Bulwark',
         colors.purple,
     ),
+    cato: new Source(
+        'https://www.cato.org/rss/blog',
+        'Cato Institute',
+        colors.dred,
+    ),
     btp: new Source(
         'https://news.ballotpedia.org/feed/',
         'BallotPedia',
@@ -434,6 +439,20 @@ const sources = {
             }
         })
     },
+    aaas: c1({
+        name: 'AAAS / Science.org',
+        url: (w => `https://www.science.org/action/showFeed?feed=rss&type=${w}`),
+        color: colors.yellow,
+        main: {
+            t: ['axatoc&jc=science', 'Main'],
+            st: ['etoc&jc=science', 'Science'],
+            rt: ['etoc&jc=scirobotics', 'Science Robotics'],
+            it: ['etoc&jc=sciimmunol', 'Science Immunology'],
+            at: ['etoc&jc=sciadv', 'Science Advances'],
+            tmt: ['etoc&jc=stm', 'Science Translational Medicine'],
+            sgt: ['etoc&jc=signaling', 'Science Signaling'],
+        }
+    }),
     /* TODO:
      *  - AAAS / science.org
      *  - 
@@ -451,6 +470,7 @@ const sources = {
      *  Went thru https://news.ycombinator.com/item?id=16908241
      */
 };
+sources.ebsco.atl.color = colors.blue;
 var safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
 var limn = (n => (ls => safesl(ls, n)));
 var last = (ls => [ls[ls.length - 1]]);
@@ -500,6 +520,7 @@ const LAYS = {
                 sources.nyt.us,
                 sources.nyt.sunopn,
                 sources.nyt.home,
+                sources.ebsco.atl,
             ]),
             new Feed('center (ish)', [
                 sources.hill.news,
@@ -558,6 +579,7 @@ const LAYS = {
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
+                sources.ebsco.atl,
                 //sources.bul,
             ]),
         ], [1, 1, 1]),
@@ -577,7 +599,6 @@ const LAYS = {
                 sources.wsj.usn,
                 sources.econ.biz,
                 sources.econ.fx,
-                sources.cfr,
                 sources.pbs.hdl,
                 sources.pbs.pol,
                 sources.btp,
@@ -588,6 +609,8 @@ const LAYS = {
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
+                sources.ebsco.atl,
+                sources.cfr,
                 //sources.bul,
             ]),
         ], [2, 1]),
@@ -615,6 +638,7 @@ const LAYS = {
                 sources.mw.rt,
                 sources.mw.urt,
                 sources.yahoo.fin,
+                sources.cs.ars,
             ]),
         ]),
     ]),
@@ -624,7 +648,6 @@ const LAYS = {
                 //sources.sciam.all, // lower quality
                 sources.nasa.iotd,
                 sources.nasa.news,
-                sources.cs.ars,
             ]),
             new Feed('software', [
                 sources.cs.hn,
@@ -642,6 +665,13 @@ const LAYS = {
             new Feed('research', [
                 sources.pubmed.jnls,
                 sources.arxiv.math,
+                /*sources.aaas.t,
+                sources.aaas.st,
+                sources.aaas.rt,
+                sources.aaas.it,
+                sources.aaas.at,
+                sources.aaas.tmt,
+                sources.aaas.sgt,*/
             ]),
         ]),
         new View([
@@ -656,6 +686,13 @@ const LAYS = {
                 sources.physorg.phys,
                 sources.physorg.chem,
                 sources.physorg.bio,
+                /*sources.aaas.t,
+                sources.aaas.st,
+                sources.aaas.rt,
+                sources.aaas.it,
+                sources.aaas.at,
+                sources.aaas.tmt,
+                sources.aaas.sgt,*/
             ]),
             new Feed('software', [
                 sources.cs.hn,
@@ -676,6 +713,13 @@ const LAYS = {
                 sources.physorg.phys,
                 sources.physorg.chem,
                 sources.physorg.bio,
+                /*sources.aaas.t,
+                sources.aaas.st,
+                sources.aaas.rt,
+                sources.aaas.it,
+                sources.aaas.at,
+                sources.aaas.tmt,
+                sources.aaas.sgt,*/
             ]),
         ]),
     ]),
