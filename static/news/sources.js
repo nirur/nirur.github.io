@@ -8,7 +8,6 @@ class Source {
         this.url = url;
         this.name = name;
         this.color = color;
-        this.proxy = false;
     }
 }
 class Feed {
@@ -303,28 +302,33 @@ const sources = {
         'https://www.scotusblog.com/feed/',
         'SCOTUSblog',
         colors.white,
+        true,
     ),
     cs: {
         hn: new Source(
             'https://hnrss.org/frontpage', //'https://news.ycombinator.com/rss',
             'Hacker News',
             colors.orange,
+            true,
         ),
         ars: new Source(
             'http://feeds.arstechnica.com/arstechnica/index/',
             'Ars Technica',
             colors.orange,
+            true,
         ),
         lwn: new Source(
             'https://lwn.net/headlines/newrss',
             'LWN',
             colors.purple,
+            true,
         )
     },
     cfr: new Source(
         'https://www.cfr.org/feed',
         'Council on Foreign Relations',
         colors.purple,
+        true,
     ),
     bul: new Source(
         'https://www.thebulwark.com/feed',
@@ -335,11 +339,13 @@ const sources = {
         'https://www.cato.org/rss/blog',
         'Cato Institute',
         colors.red,
+        true,
     ),
     btp: new Source(
         'https://news.ballotpedia.org/feed/',
         'BallotPedia',
         colors.yellow,
+        true,
     ),
     /*
      * Kill the Newsletter! turns email newsletters into atom feeds.
@@ -370,7 +376,7 @@ const sources = {
         }),
         cities: c1({
             name: 'Nearby',
-            url: (w => `https://${w}.com/feed`),
+            url: (w => `https://${w}.com/feed/`),
             color: colors.green,
             main: {
                 mv: ['www.mv-voice', 'Mountain View Voice'],
@@ -403,7 +409,7 @@ const sources = {
         ),
         cal: c1({
             name: 'CA',
-            url: (w => `https://${w}.org/feed`),
+            url: (w => `https://${w}.org/feed/`),
             color: colors.yellow,
             main: {
                 cm: ['calmatters', 'CalMatters'],
@@ -463,9 +469,12 @@ const sources = {
      *  Went thru https://news.ycombinator.com/item?id=16908241
      */
 };
+sources.local.sj.sn = new Source(
+    ktn('wgly4po8rbojkzhti4z50286va9q0cihiy2ureq5'),
+    'KtN > San Jose Spotlight',
+    colors.green,
+)
 sources.ebsco.atl.color = colors.blue;
-sources.local.sj.s.url = ktn('wgly4po8rbojkzhti4z50286va9q0cihiy2ureq5');
-sources.local.sj.s.name = 'KtN > San Jose Spotlight';
 sources.local.tino.ctd.url = ktn('dim6q9ijcq251c16kvy3zcf1eatjw3a5kf3mow2y');
 sources.local.tino.ctd.name = 'KtN > Cupertino Today';
 var safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
@@ -648,13 +657,13 @@ const LAYS = {
                 //sources.sciam.all, // lower quality
                 sources.nasa.iotd,
                 sources.nasa.news,
+                sources.wp.tt,
             ]),
             new Feed('software', [
                 sources.cs.hn,
                 sources.cs.lwn,
             ]),
             new Feed('middle ground', [
-                sources.wp.tt,
                 sources.physorg.nano,
                 sources.physorg.phys,
                 // sources.physorg.space, // using others for space

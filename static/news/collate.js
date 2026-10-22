@@ -142,14 +142,16 @@ function info(el, sc) {
 var CACHE = {};
 async function rote_fetch(url, prx) {
     var res;
-    if (prx) {
+    try {
         res = await fetch('https://cors-proxy.a91-b83.workers.dev/', {
             method: 'POST',
             cache: 'no-cache',
             body: url,
             headers: {},
         });
-    } else {
+        if (res.status != 200)
+            throw new Error();
+    } catch {
         res = await fetch(url, { cache: 'no-cache' });
     }
     if (res.status != 200)
