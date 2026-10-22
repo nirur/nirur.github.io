@@ -140,29 +140,34 @@ function info(el, sc) {
 }
 
 var CACHE = {};
-async function rote_fetch(url) {
-    var res = await fetch('https://cors-proxy.a91-b83.workers.dev/', {
-        method: 'POST',
-        cache: 'no-cache',
-        body: url,
-        headers: {},
-    });
+async function rote_fetch(url, prx) {
+    var res;
+    if (prx) {
+        res = await fetch('https://cors-proxy.a91-b83.workers.dev/', {
+            method: 'POST',
+            cache: 'no-cache',
+            body: url,
+            headers: {},
+        });
+    } else {
+        res = await fetch(url, { cache: 'no-cache' });
+    }
     if (res.status != 200)
         return null;
     res = await res.text();
     return res;
 }
-function cached_fetch(url) {
+function cached_fetch(url, prx) {
     if (CACHE[url] == undefined) {
         // no await to ensure no repeats
-        CACHE[url] = rote_fetch(url);
+        CACHE[url] = rote_fetch(url, prx);
     }
     return CACHE[url];
 }
 
 async function coll_source(sc, rules = []) {
     rules = [...rules, sc.postproc];
-    var res = await cached_fetch(sc.url);
+    var res = await cached_fetch(sc.url, sc.proxy);
     if (res == null)
         return [];
     res = parse(res);

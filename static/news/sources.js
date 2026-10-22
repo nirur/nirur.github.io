@@ -8,6 +8,7 @@ class Source {
         this.url = url;
         this.name = name;
         this.color = color;
+        this.proxy = false;
     }
 }
 class Feed {
