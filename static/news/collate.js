@@ -73,6 +73,16 @@ function petty_elm(elm) {
     <span>${pdt}</span>
     <span>${elm.series}</span>
 </p>`;
+    var fig = ret.querySelector('figure');
+    if (fig) {
+        fig.replaceWith(fig.firstChild);
+    }
+    var img = ret.querySelector('img');
+    if (img) {
+        img.removeAttribute('width');
+        img.removeAttribute('height');
+        img.removeAttribute('sizes');
+    }
     return ret;
 }
 function petty_nav(name, sel, ttl) {
@@ -135,6 +145,7 @@ async function rote_fetch(url) {
         method: 'POST',
         cache: 'no-cache',
         body: url,
+        headers: {},
     });
     if (res.status != 200)
         return null;

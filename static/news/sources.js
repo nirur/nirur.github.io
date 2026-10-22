@@ -69,6 +69,7 @@ function c1(jn) {
     }
     return rep;
 }
+ktn = (w => `https://kill-the-newsletter.com/feeds/${w}.xml`)
 
 // A good place to start:
 // https://about.fb.com/wp-content/uploads/2016/05/rss-urls-1.pdf
@@ -292,20 +293,6 @@ const sources = {
             p_intl: ['international', 'International'],
         }
     }),
-    /*ktn: c1({
-        /*
-         * Kill the Newsletter! turns email newsletters into atom feeds.
-         * To edit settings or delete a feed, delete the '.xml' at the end of
-         * one of the feed urls, and you'll get the info page. This also gives
-         * you the email with which to subscribe to various sources.
-         * /
-        name: 'KtN',
-        url: (w => `https://kill-the-newsletter.com/feeds/${w}.xml`),
-        color: colors.yellow,
-        main: {
-            blt: ['3rv538bl1bbmkokdxdn8shjtvpyl71cqzl48p6sx', 'BallotPedia'],
-        }
-    }),*/
     onion: new Source(
         'https://theonion.com/feed/',
         "The Onion",
@@ -353,14 +340,20 @@ const sources = {
         'BallotPedia',
         colors.yellow,
     ),
+    /*
+     * Kill the Newsletter! turns email newsletters into atom feeds.
+     * To edit settings or delete a feed, delete the '.xml' at the end of
+     * one of the feed urls, and you'll get the info page. This also gives
+     * you the email with which to subscribe to various sources.
+     */
     local: {
         patch: new Source(
-            'https://kill-the-newsletter.com/feeds/tuvi8646se065dtrlmcakd7xplfr02yd5kvmtp37.xml',
+            ktn('tuvi8646se065dtrlmcakd7xplfr02yd5kvmtp37'),
             'KtN > Patch',
             colors.green,
         ),
         lcgov: new Source(
-            'https://kill-the-newsletter.com/feeds/0xefh9uf7am1nzelvw3t192cminnustw0iofh8nr.xml',
+            ktn('0xefh9uf7am1nzelvw3t192cminnustw0iofh8nr'),
             'KtN > Cupertino.gov, SanJoseCA.gov',
             colors.white,
         ),
@@ -455,7 +448,6 @@ const sources = {
     }),
     /* TODO:
      *  - AAAS / science.org
-     *  - 
      *
      * Decided against:
      *  - zbMATH is CloudFlare blocked
@@ -471,6 +463,10 @@ const sources = {
      */
 };
 sources.ebsco.atl.color = colors.blue;
+sources.local.sj.s.url = ktn('wgly4po8rbojkzhti4z50286va9q0cihiy2ureq5');
+sources.local.sj.s.name = 'KtN > San Jose Spotlight';
+sources.local.tino.ctd.url = ktn('dim6q9ijcq251c16kvy3zcf1eatjw3a5kf3mow2y');
+sources.local.tino.ctd.name = 'KtN > Cupertino Today';
 var safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
 var limn = (n => (ls => safesl(ls, n)));
 var last = (ls => [ls[ls.length - 1]]);

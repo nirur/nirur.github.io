@@ -92,18 +92,21 @@ html {
     padding: 8px !important;
 }
 
-#content img, #content audio {
+.card img, .card audio {
     display: block;
-    margin: auto;
 }
 
-#content img {
+.card img {
     max-height: 250px;
-    max-width: min(90%, 400px);
-    width: auto;
+    max-width: 90%;
+    object-fit: contain;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-#content audio {
+.card audio {
     width: 100%;
 }
 
