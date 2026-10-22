@@ -346,7 +346,7 @@ const sources = {
     cato: new Source(
         'https://www.cato.org/rss/blog',
         'Cato Institute',
-        colors.dred,
+        colors.red,
     ),
     btp: new Source(
         'https://news.ballotpedia.org/feed/',
@@ -547,6 +547,7 @@ const LAYS = {
             ]),
             new Feed('right', [
                 sources.wsj.opn,
+                sources.cato,
             ]),
         ]),
         new View([
@@ -580,6 +581,7 @@ const LAYS = {
                 sources.nyt.us,
                 sources.nyt.sunopn,
                 sources.ebsco.atl,
+                sources.cato,
                 //sources.bul,
             ]),
         ], [1, 1, 1]),
@@ -611,6 +613,7 @@ const LAYS = {
                 sources.nyt.sunopn,
                 sources.ebsco.atl,
                 sources.cfr,
+                sources.cato,
                 //sources.bul,
             ]),
         ], [2, 1]),
