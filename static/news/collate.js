@@ -95,11 +95,11 @@ function petty_nav(name, sel, ttl) {
 function algo(el, rank) {
     // HIGHER IS BETTER
 
-    //const push = 7_200_000; //86_400_000; // 7_200_000
-    //return time - rank * push;
+    const push = 2; // 3, 4, 12
+    return (el.dt.getTime() / 3_600_000) - rank * push * (2 + el.weight);
 
     // Modified Hacker News
-    return ((rank + 2) ** -0.5) * (((Date.now() - el.dt.getTime()) / 3_600_000) + 2) ** -el.weight
+    //return ((rank + 2) ** -0.5) * (((Date.now() - el.dt.getTime()) / 3_600_000) + 2) ** -el.weight
 }
 
 function info(el, sc) {
@@ -121,6 +121,7 @@ function info(el, sc) {
         auth: el.querySelectorAll('creator').values().map(
             e => petty_line(e.textContent)
         ).join('; '),
+        tex: sc.tex,
     };
     if (sc.name.startsWith('C-SPAN')) {
         ret.piecel = 'https://www.c-span.org/podcasts/subpage/?series='
@@ -230,15 +231,19 @@ async function coll_feed(feed, ELEM, rules = []) {
         });
         ls.sort();
         ls.reverse();
-        ls = ls.map(v => [v[0], petty_elm(v[1])]);
+        ls = ls.map(v => [v[0], petty_elm(v[1]), v[1].tex]);
 
         // crude chop:
         if (ls.length == 0)
             return;
 
+        var texing = [];
         ist = (i, j) => {
-            ELEM.insertBefore(ls[j][1], added[i][1]);
-            added.splice(i, 0, ls[j]);
+            var eof = ls[j];
+            ELEM.insertBefore(eof[1], added[i][1]);
+            added.splice(i, 0, [eof[0], eof[1]]);
+            if (eof[2])
+                texing.push(eof[1]);
         }
         var j = 0;
         for (var i = 0; i < added.length; i++) // don't simplify line
@@ -249,9 +254,13 @@ async function coll_feed(feed, ELEM, rules = []) {
                     break;
             }
         for (var k = j; k < ls.length; k++) { // not simplifiable
-            ELEM.appendChild(ls[k][1]);
-            added.push(ls[k]);
+            var eof = ls[k];
+            ELEM.appendChild(eof[1]);
+            added.push([eof[0], eof[1]]);
+            if (eof[2])
+                texing.push(eof[1]);
         }
+        MathJax.typesetPromise(texing);
     });
 }
 async function coll_view(view, ns = [], ELEM, rules = []) {

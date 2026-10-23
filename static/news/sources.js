@@ -4,6 +4,7 @@ const GRAV = 0.4;
 
 class Source {
     gravity = GRAV;
+    tex = false;
     constructor(url, name, color) {
         this.url = url;
         this.name = name;
@@ -55,6 +56,7 @@ const colors = {
 }
 
 // Some shortcuts for sourcing
+all = Object.values;
 function c1(jn) {
     rep = {};
     var m = jn.name;
@@ -153,7 +155,7 @@ const sources = {
         main: {
             hdl: ['headlines', 'Headlines'],
             pol: ['politics', 'Politics'],
-            pod: ['podcasts/segments', 'Podcast segments'],
+            //pod: ['podcasts/segments', 'Podcast segments'],
         }
     }),
     politico: c1({
@@ -220,6 +222,11 @@ const sources = {
         color: colors.yellow,
         main: {
             math: ['math', 'Math'],
+            qph: ['quant-ph', 'Quantum physics'],
+            hep_ex: ['hep-ex', 'High energy physics: Experimental'],
+            nu_ex: ['nucl-ex', 'Nuclear experiments'],
+            nu_th: ['nucl-th', 'Nuclear theory'],
+            app: ['physics.app-ph', 'Applied physics'],
             // many, many more exist
         }
     }),
@@ -302,33 +309,28 @@ const sources = {
         'https://www.scotusblog.com/feed/',
         'SCOTUSblog',
         colors.white,
-        true,
     ),
     cs: {
         hn: new Source(
             'https://hnrss.org/frontpage', //'https://news.ycombinator.com/rss',
             'Hacker News',
             colors.orange,
-            true,
-        ),
-        ars: new Source(
-            'http://feeds.arstechnica.com/arstechnica/index/',
-            'Ars Technica',
-            colors.orange,
-            true,
         ),
         lwn: new Source(
             'https://lwn.net/headlines/newrss',
             'LWN',
             colors.purple,
-            true,
         )
     },
+    ars: new Source(
+        'http://feeds.arstechnica.com/arstechnica/index/',
+        'Ars Technica',
+        colors.orange,
+    ),
     cfr: new Source(
         'https://www.cfr.org/feed',
         'Council on Foreign Relations',
         colors.purple,
-        true,
     ),
     bul: new Source(
         'https://www.thebulwark.com/feed',
@@ -339,13 +341,11 @@ const sources = {
         'https://www.cato.org/rss/blog',
         'Cato Institute',
         colors.red,
-        true,
     ),
     btp: new Source(
         'https://news.ballotpedia.org/feed/',
         'BallotPedia',
         colors.yellow,
-        true,
     ),
     /*
      * Kill the Newsletter! turns email newsletters into atom feeds.
@@ -455,17 +455,28 @@ const sources = {
     }),
     /* TODO:
      *  - AAAS / science.org
+     *  - techcrunch: https://techcrunch.com/feed/
+     *  - more arxiv
+     *  - decide on autoblog.com
+     *  - decide on *.pnr.ouryahoo.com
+     *  - decide on *.search.yahoo.com
+     *  - decide on *.search.aol.com
+     *  - decide on *.onesearch.com
+     *  - decide on *.verizonmedia.com
+     *  - decide on *.publishing.oath.com
+     *  - decide on *.oath.com
+     *  - decide on csp.yahoo.com/beacon/csp
      *
      * Decided against:
      *  - zbMATH is CloudFlare blocked
-     *  - BBC paywalled
+     *  - BBC is paywalled
      *    paywall can be circumvented by disabling JS, but this is unethical.
-     *  - Tangle paywalled
-     *  - Newsweek unreliable
+     *  - Tangle is paywalled
+     *  - Newsweek is unreliable
      *    See Ad Fontes' ratings of their various articles,
      *    and read the explanations. They use AI without disclosing it,
      *    and the AI tends to make mistakes. They also don't disclose corrections.
-     *  - Independent biased
+     *  - Independent is biased
      *  Went thru https://news.ycombinator.com/item?id=16908241
      */
 };
@@ -485,6 +496,21 @@ sources.onion.postproc = limn(1);
 sources.wiki.home.postproc = last;
 sources.wiki.potd.postproc = last;
 sources.wsj.opn.color = colors.dred;
+sources.wp.tt.postproc = (l => {
+    l.forEach(e => {
+        e.mediap = null;
+    });
+    return l;
+});
+all(sources.arxiv).forEach(sc => {
+    sc.postproc = (l => {
+        l.forEach(e => {
+            e.pieced = '';
+        });
+        return l;
+    });
+    sc.tex = true;
+});
 sources.cs.hn.postproc = (l => l.map(e => {
     var el = elem('div');
     el.innerHTML = e.pieced;
@@ -508,13 +534,15 @@ sources.cs.hn.postproc = (l => l.map(e => {
         return null;
     }
 }).filter(e => (e != null)));
-sources.scotus.postproc = (l => l.map(e => {
-    var descr = petty_line(get(e.raw, 'encoded'))
-    var ind = descr.indexOf('</p>');
-    descr = descr.substring(0, ind + 4);
-    e.pieced = descr;
-    return e;
-}));
+sources.scotus.postproc = (l => {
+    l.forEach(e => {
+        var descr = petty_line(get(e.raw, 'encoded'))
+        var ind = descr.indexOf('</p>');
+        descr = descr.substring(0, ind + 4);
+        e.pieced = descr;
+    });
+    return l;
+});
 
 sources.wsj.gravity = GRAV / 2;
 
@@ -537,16 +565,12 @@ const LAYS = {
                 sources.btp,
             ]),
             new Feed('spread', [
-                sources.pbs.hdl,
-                sources.pbs.pol,
+                ...all(sources.pbs),
                 sources.wsj.world,
                 sources.wsj.usbiz,
                 sources.wsj.pol,
                 sources.wsj.usn,
-                sources.politico.cong,
-                sources.politico.def,
-                sources.politico.pol,
-                sources.politico.hth,
+                ...all(sources.politico),
                 sources.econ.biz,
                 sources.econ.fx,
                 //sources.bul,
@@ -567,18 +591,14 @@ const LAYS = {
                 sources.btp,
             ]),
             new Feed('medium', [
-                sources.politico.cong,
-                sources.politico.def,
-                sources.politico.pol,
-                sources.politico.hth,
+                ...all(sources.politico),
                 sources.wsj.world,
                 sources.wsj.usbiz,
                 sources.wsj.pol,
                 sources.wsj.usn,
                 sources.econ.biz,
                 sources.econ.fx,
-                sources.pbs.hdl,
-                sources.pbs.pol,
+                ...all(sources.pbs),
             ]),
             new Feed('more biased', [
                 sources.wsj.opn,
@@ -597,18 +617,14 @@ const LAYS = {
                 sources.hill.news,
                 sources.hill.biz,
                 sources.csp.wtd,
-                sources.politico.cong,
-                sources.politico.def,
-                sources.politico.pol,
-                sources.politico.hth,
+                ...all(sources.politico),
                 sources.wsj.world,
                 sources.wsj.usbiz,
                 sources.wsj.pol,
                 sources.wsj.usn,
                 sources.econ.biz,
                 sources.econ.fx,
-                sources.pbs.hdl,
-                sources.pbs.pol,
+                ...all(sources.pbs),
                 sources.btp,
             ]),
             new Feed('higher bias', [
@@ -647,7 +663,7 @@ const LAYS = {
                 sources.mw.rt,
                 sources.mw.urt,
                 sources.yahoo.fin,
-                sources.cs.ars,
+                sources.ars,
             ]),
         ]),
     ]),
@@ -655,157 +671,94 @@ const LAYS = {
         new View([
             new Feed('mainstream', [
                 //sources.sciam.all, // lower quality
-                sources.nasa.iotd,
-                sources.nasa.news,
+                sources.nasa.all,
                 sources.wp.tt,
-            ]),
-            new Feed('software', [
-                sources.cs.hn,
-                sources.cs.lwn,
-            ]),
-            new Feed('middle ground', [
-                sources.physorg.nano,
-                sources.physorg.phys,
                 // sources.physorg.space, // using others for space
+            ]),
+            new Feed('software',
+                all(sources.cs),
+            ),
+            new Feed('bio, chem', [
                 sources.physorg.chem,
                 sources.physorg.bio,
-                // sources.physorg.math, // using others for math
-            ]),
-            new Feed('research', [
                 sources.pubmed.jnls,
-                sources.arxiv.math,
-                /*sources.aaas.t,
-                sources.aaas.st,
-                sources.aaas.rt,
-                sources.aaas.it,
-                sources.aaas.at,
-                sources.aaas.tmt,
-                sources.aaas.sgt,*/
+            ]),
+            new Feed('phys, math', [
+                ...all(sources.arxiv),
+                sources.physorg.nano,
+                sources.physorg.phys,
+                // sources.physorg.math, // using arxiv for math
             ]),
         ]),
         new View([
             new Feed('news', [
-                sources.nasa.iotd,
-                sources.nasa.news,
+                sources.nasa.all,
                 sources.wp.tt,
+                ...all(sources.cs),
             ]),
-            new Feed('research', [
-                sources.pubmed.jnls,
-                sources.arxiv.math,
-                sources.physorg.phys,
+            new Feed('bio, chem', [
                 sources.physorg.chem,
                 sources.physorg.bio,
-                /*sources.aaas.t,
-                sources.aaas.st,
-                sources.aaas.rt,
-                sources.aaas.it,
-                sources.aaas.at,
-                sources.aaas.tmt,
-                sources.aaas.sgt,*/
+                sources.pubmed.jnls,
             ]),
-            new Feed('software', [
-                sources.cs.hn,
-                sources.cs.lwn,
+            new Feed('phys, math', [
+                ...all(sources.arxiv),
+                sources.physorg.nano,
+                sources.physorg.phys,
             ]),
         ]),
         new View([
             new Feed('light', [
-                sources.nasa.iotd,
-                sources.nasa.news,
+                sources.nasa.all,
                 sources.wp.tt,
-                sources.cs.hn,
-                sources.cs.lwn,
+                ...all(sources.cs),
             ]),
             new Feed('heavy', [
                 sources.pubmed.jnls,
-                sources.arxiv.math,
+                ...all(sources.arxiv),
+                sources.physorg.nano,
                 sources.physorg.phys,
                 sources.physorg.chem,
                 sources.physorg.bio,
-                /*sources.aaas.t,
-                sources.aaas.st,
-                sources.aaas.rt,
-                sources.aaas.it,
-                sources.aaas.at,
-                sources.aaas.tmt,
-                sources.aaas.sgt,*/
             ]),
         ]),
     ]),
     local: new Layout('Local', [
         new View([
             new Feed('community', [
-                sources.local.tino.ctd,
-                sources.local.tino.cm,
-                sources.local.tino.cf,
+                ...all(sources.local.tino),
                 sources.local.patch,
             ]),
             new Feed('government', [
                 sources.local.lcgov,
-            ].concat(
-                (() => {
-                    var ls = [21, 25];
-                    for (i = 3; i <= 15; i++)
-                        if (i != 6)
-                            ls.push(i);
-                    ls = ls.map(n => sources.local.lao[n]);
-                    return ls;
-                })()
-            )),
+                ...all(sources.local.lao),
+            ]),
             new Feed('analysis', [
                 sources.local.sfgate,
                 sources.local.sfist,
-                sources.local.cal.cm,
-                sources.local.cal.kq,
-                sources.local.cal.sb,
-                sources.local.sj.i,
-                sources.local.sj.s,
+                ...all(sources.local.cal),
+                ...all(sources.local.sj),
             ]),
-            new Feed('nearby', [
-                sources.local.cities.mv,
-                sources.local.cities.sv,
-                sources.local.cities.pa,
-                sources.local.cities.rw,
-                sources.local.cities.lg,
-                sources.local.cities.pao,
-                sources.local.cities.kron,
-            ]),
+            new Feed('nearby',
+                all(sources.local.cities)
+            ),
         ]),
         new View([
             new Feed('community', [
-                sources.local.tino.ctd,
-                sources.local.tino.cm,
-                sources.local.tino.cf,
+                ...all(sources.local.tino),
                 sources.local.patch,
-                sources.local.cities.mv,
-                sources.local.cities.sv,
-                sources.local.cities.pa,
-                sources.local.cities.rw,
-                sources.local.cities.lg,
-                sources.local.cities.pao,
-                sources.local.cities.kron,
+                ...all(sources.local.cities),
             ]),
             new Feed('analysis', [
                 sources.local.sfgate,
                 sources.local.sfist,
-                sources.local.cal.cm,
-                sources.local.cal.kq,
-                sources.local.cal.sb,
-                sources.local.sj.i,
-                sources.local.sj.s,
+                ...all(sources.local.cal),
+                ...all(sources.local.sj),
             ]),
             new Feed('government', [
                 sources.local.lcgov,
-            ].concat(
-                (() => {
-                    var ls = [21, 25];
-                    for (i = 3; i <= 15; i++)
-                        if (i != 6)
-                            ls.push(i);
-                    ls = ls.map(n => sources.local.lao[n]);
-                    return ls;
-                })()
-            )),
+                ...all(sources.local.lao),
+            ]),
         ]),
     ]),
 };
