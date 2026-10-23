@@ -52,7 +52,7 @@ a:not(:hover, :active) {
     text-decoration: none;
 }
 
-:is(a, a:visited, a:hover):not(.blanklk *) {
+:is(a, a:visited, a:hover):not(.blanklk *:not(.unblanklk *)) {
     color: var(--link);
 }
 
