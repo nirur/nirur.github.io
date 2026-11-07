@@ -73,6 +73,9 @@ function petty_elm(elm) {
     <span>${pdt}</span>
     <span>${elm.series}</span>
 </p>`;
+    for (var lk of ret.querySelectorAll('a')) {
+        lk.target = '_blank';
+    }
     var fig = ret.querySelector('figure');
     if (fig) {
         fig.replaceWith(fig.firstChild);
