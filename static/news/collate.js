@@ -21,7 +21,7 @@ var parse, parseh;
 const getr = (e, t) => e.querySelector(t);
 const get = (e, t) => getr(e, t)?.textContent;
 const deiter = (l => l.reduce((r, v) => [...r, v], []));
-const elem = (e => document.createElement(e));
+const Jn = 3;
 
 function petty_line(ln) {
     if (ln == undefined || ln == null)
@@ -95,17 +95,22 @@ function petty_nav(name, sel, ttl) {
 function algo(el, rank) {
     // HIGHER IS BETTER
 
-    const push = 2; // 3, 4, 12
-    return (el.dt.getTime() / 3_600_000) - rank * push * (2 + el.weight);
+    const push = .9; // 2, 3, 4, 12
+    const dt = (Date.now() - el.dt.getTime());
+    const hr = 3_600_000;
+
+    dtn = Math.log(1 + dt / (2 * hr));
+    const res = el.weight / (dtn + rank * push);
 
     // Modified Hacker News
     //return ((rank + 2) ** -0.5) * (((Date.now() - el.dt.getTime()) / 3_600_000) + 2) ** -el.weight
+
+    //console.log(res);
+    return res;
 }
 
 function info(el, sc) {
     var mediap = getr(el, 'enclosure, content');
-    if (mediap?.textContent.includes("Terry"))
-        mediap = null;
     var ret = {
         piece: petty_line(get(el, 'title')),
         pieced: petty_line(get(el, 'description, encoded, summary')),
@@ -117,31 +122,19 @@ function info(el, sc) {
         series: sc.name,
         color: sc.color,
         raw: el,
-        weight: sc.gravity,
+        weight: sc.weight,
         auth: el.querySelectorAll('creator').values().map(
             e => petty_line(e.textContent)
         ).join('; '),
         tex: sc.tex,
     };
-    if (sc.name.startsWith('C-SPAN')) {
-        ret.piecel = 'https://www.c-span.org/podcasts/subpage/?series='
-            + (s => {
-                if (s == 'Washington Today')
-                    return 'washingtonToday';
-                if (s == 'Ceasefire')
-                    return 'ceasefire';
-                if (s == 'Extreme Mortman')
-                    return 'ExtremeMortman';
-                throw new Error('You added a C-SPAN podcast without finding the linking series name.');
-            })(sc.name.slice(9)) + '&episode=' + ret.guid;
-    }
     if (ret.pieced.includes('blockquote'))
         ret.pieced = ret.pieced.slice(0, ret.pieced.indexOf('<blockquote'));
     return ret;
 }
 
 var CACHE = {};
-async function rote_fetch(url, prx) {
+async function rote_fetch(url) {
     var res;
     try {
         res = await fetch('https://cors-proxy.a91-b83.workers.dev/', {
@@ -160,27 +153,23 @@ async function rote_fetch(url, prx) {
     res = await res.text();
     return res;
 }
-function cached_fetch(url, prx) {
+function cached_fetch(url) {
     if (CACHE[url] == undefined) {
         // no await to ensure no repeats
-        CACHE[url] = rote_fetch(url, prx);
+        CACHE[url] = rote_fetch(url);
     }
     return CACHE[url];
 }
 
 async function coll_source(sc, rules = []) {
     rules = [...rules, sc.postproc];
-    var res = await cached_fetch(sc.url, sc.proxy);
+    var res = await cached_fetch(sc.url);
     if (res == null)
         return [];
     res = parse(res);
     res = res.querySelectorAll('item, entry')
         .values()
         .map(e => info(e, sc))
-        .filter(e => (
-            (e.piece != 'No records found')
-            && (!e.piece.startsWith('Alert Run Date'))
-        ));
     res = deiter(res);
     for (var rule of rules) {
         if (rule != undefined)
@@ -204,24 +193,28 @@ async function coll_feed(feed, ELEM, rules = []) {
     ELEM.innerHTML += fttl;
 
     var added = [];
+    var added_ttls = new Set();
     Object.values(obj).map(async scg => {
         var ls = scg.map(sc => coll_source(sc, rules));
         ls = await Promise.all(ls);
-        ls = ls.filter(l => l.length > 0);
+        ls = ls.filter(l => l.length > 0)
         ls = ls.flatMap(l => l.map((e, r) => [algo(e, r), e]));
+        ls = ls.filter(e => (!added_ttls.has(e[1].piece)));
 
         var st = {};
         ls.forEach(v => {
             var key = v[1].guid;
-            var value = [v[0], v[1]];
+            var value = v[0];// ** Jn;
             if (st[key] == undefined) {
-                st[key] = value;
+                st[key] = [value, v[1], 1];;
             } else {
-                st[key][0] += value[0];
+                st[key][0] = Math.max(st[key][0], value);//+= value;
+                st[key][2]++;
             }
         });
 
         ls = Object.values(st);
+        ls = ls.map(v => [v[0] / v[2], v[1]]);
         ls.sort();
         ls.reverse();
         ls = ls.map((e, r) => {
@@ -231,7 +224,7 @@ async function coll_feed(feed, ELEM, rules = []) {
         });
         ls.sort();
         ls.reverse();
-        ls = ls.map(v => [v[0], petty_elm(v[1]), v[1].tex]);
+        ls = ls.map(v => [v[0], petty_elm(v[1]), v[1]]);
 
         // crude chop:
         if (ls.length == 0)
@@ -242,7 +235,7 @@ async function coll_feed(feed, ELEM, rules = []) {
             var eof = ls[j];
             ELEM.insertBefore(eof[1], added[i][1]);
             added.splice(i, 0, [eof[0], eof[1]]);
-            if (eof[2])
+            if (eof[2].tex)
                 texing.push(eof[1]);
         }
         var j = 0;
@@ -257,7 +250,9 @@ async function coll_feed(feed, ELEM, rules = []) {
             var eof = ls[k];
             ELEM.appendChild(eof[1]);
             added.push([eof[0], eof[1]]);
-            if (eof[2])
+            added_ttls.add(eof[2].piece);
+            console.log(added_ttls);
+            if (eof[2].tex)
                 texing.push(eof[1]);
         }
         MathJax.typesetPromise(texing);

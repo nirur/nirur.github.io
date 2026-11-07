@@ -1,9 +1,28 @@
+const elem = (e => document.createElement(e));
 const VMAX = 4;
-const POSTPROC = (l => l.slice(0, Math.min(l.length, 20)));
-const GRAV = 0.4;
+slice2 = (s, l) => s.slice(0, Math.min(s.length, l));
+clip = (s, l) => {
+    var space = elem('div');
+    space.innerHTML = s;
+    var st = space.textContent;
+    space.textContent = slice2(st, l);
+    var nw = space.innerHTML;
+    if (st.length > l)
+        return nw + '...';
+    return nw;
+}
+const POSTPROC = (l => {
+    l = slice2(l, 50);
+    l.forEach(elm => {
+        elm.pieced = clip(elm.pieced, 800);
+        elm.auth = clip(elm.auth, 200);
+    });
+    return l;
+});
+const GRAV = 10;
 
 class Source {
-    gravity = GRAV;
+    weight = GRAV;
     tex = false;
     constructor(url, name, color) {
         this.url = url;
@@ -42,6 +61,7 @@ class Layout {
     }
 }
 
+/*
 const colors = {
     white: 'white', // c-span, podcasts
     blue: 'azure', // Economist, Atlantic, PBS, Politico
@@ -52,8 +72,21 @@ const colors = {
     green: '#d6ffd6', // Bloomberg, MW, Forbes, Barron's (no RSS)
     purple: 'lavender', // Blog posts
     orange: 'oldlace', // Soft sci
-
+}*/
+const refc = {
+    red: 0,
+    orange: 30,
+    yellow: 60,
+    green: 120,
+    cyan: 180,
+    blue: 210,
+    purple: 240,
+    violet: 300,
+    pink: 330,
 }
+colors = ((w, l) => (w == 'white' ? 'initial' :
+    `hsl(${refc[w]} 80% ${l ? 70 : 90}%)`
+))
 
 // Some shortcuts for sourcing
 all = Object.values;
@@ -79,7 +112,7 @@ const sources = {
     wsj: c1({
         name: 'WSJ',
         url: (w => 'https://feeds.content.dowjones.io/public/rss/' + w),
-        color: colors.red,
+        color: colors('red', 0),
         main: {
             opn: ['RSSOpinion', 'Opinion'],
             world: ['RSSWorldNews', 'World'],
@@ -101,7 +134,7 @@ const sources = {
     mw: c1({
         name: 'MarketWatch',
         url: (w => 'https://feeds.content.dowjones.io/public/rss/' + w),
-        color: colors.green,
+        color: colors('green', 1),
         main: {
             top: ['mw_topstories', null], // not great, whiny letters
             rt: ['mw_realtimeheadlines', 'Real-time'],
@@ -112,7 +145,7 @@ const sources = {
     nyt: c1({
         name: 'NYT',
         url: (w => 'https://rss.nytimes.com/services/xml/rss/nyt/' + w + ".xml"),
-        color: colors.dblue,
+        color: colors('blue', 1),
         main: {
             home: ['HomePage', null],
             world: ['World'],
@@ -140,7 +173,7 @@ const sources = {
     econ: c1({
         name: 'The Economist',
         url: (w => 'https://economist.com/' + w + '/rss.xml'),
-        color: colors.blue,
+        color: colors('blue', 0),
         main: {
             econ: ['finance-and-economics', 'Finance & economics'],
             biz: ['business', 'Business'],
@@ -151,7 +184,7 @@ const sources = {
     pbs: c1({
         name: 'PBS',
         url: (w => 'https://www.pbs.org/newshour/feeds/rss/' + w),
-        color: colors.blue,
+        color: colors('cyan', 1),
         main: {
             hdl: ['headlines', 'Headlines'],
             pol: ['politics', 'Politics'],
@@ -161,7 +194,7 @@ const sources = {
     politico: c1({
         name: 'Politico',
         url: (w => `https://rss.politico.com/${w}.xml`),
-        color: colors.blue,
+        color: colors('cyan', 1),
         main: {
             cong: ['congress', 'Congress'],
             def: ['defense', 'Defense'],
@@ -172,7 +205,7 @@ const sources = {
     yahoo: c1({
         name: 'Yahoo',
         url: (w => `https://${w}.yahoo.com/rss/economy`),
-        color: colors.green,
+        color: colors('green', 1),
         main: {
             fin: ['finance', 'Finance'],
         }
@@ -180,7 +213,7 @@ const sources = {
     barr: c1({
         name: "Barron\'s",
         url: (w => w),
-        color: colors.white,
+        color: colors('green', 0),
         main: {
             pod: ['https://video-api.shdsvc.dowjones.io/api/podcasts/feed/barron%27s%20live%20conference%20calls', "live podcast"],
         }
@@ -189,7 +222,7 @@ const sources = {
         // A new alert/feed must be created yearly
         name: 'EBSCO',
         url: (w => 'https://research.ebsco.com/rss/' + w),
-        color: colors.green,
+        color: colors('green', 0),
         main: {
             bloom: ['c2E6MTBjZjI4MzctMWJhNC00MzgwLTkyYmMtMTY1NjBkOTM1ODdh', 'Bloomberg'],
             forbes: ['c2E6NTYyMDM2MjAtYjk1MC00OGQ2LTgxNzYtOGI4MGQ3NThmNDE4', 'Forbes'],
@@ -199,7 +232,7 @@ const sources = {
     nasa: c1({
         name: 'NASA',
         url: (w => 'https://www.nasa.gov/' + w),
-        color: colors.orange,
+        color: colors('orange', 1),
         main: {
             all: ['feed', null],
             iotd: ['feeds/iotd-feed', 'Image of the Day'],
@@ -210,7 +243,7 @@ const sources = {
     pubmed: c1({
         name: 'PubMed',
         url: (w => 'https://pubmed.ncbi.nlm.nih.gov/rss/search/' + w + '/?limit=50'),
-        color: colors.yellow,
+        color: colors('yellow', 0),
         // add on to url: '&utm_campaign=pubmed-2&fc=20261003035059'
         main: {
             jnls: ['1RIspYzP7ykXpaKqWcD6U7mB7ndQGZAyMrCA9GH1vJEyOPMUXf', 'High impact journals'],
@@ -219,7 +252,7 @@ const sources = {
     arxiv: c1({
         name: 'arXiv',
         url: (w => 'https://rss.arxiv.org/rss/' + w),
-        color: colors.yellow,
+        color: colors('yellow', 0),
         main: {
             math: ['math', 'Math'],
             qph: ['quant-ph', 'Quantum physics'],
@@ -233,7 +266,7 @@ const sources = {
     sciam: c1({
         name: 'Scientific American',
         url: (w => 'http://rss.sciam.com/' + w),
-        color: colors.orange,
+        color: colors('orange', 0),
         main: {
             all: ['ScientificAmerican-Global', null],
             news: ['ScientificAmerican-News', 'News'],
@@ -244,7 +277,7 @@ const sources = {
     physorg: c1({
         name: 'Phys.org',
         url: (w => 'https://phys.org/rss-feed/' + w),
-        color: colors.orange,
+        color: colors('orange', 1),
         main: {
             all: ['', null],
             nano: ['nanotech-news', 'Nanotech'],
@@ -260,7 +293,7 @@ const sources = {
     wp: c1({
         name: 'WordPress',
         url: (w => `https://${w}.wordpress.com/feed/`),
-        color: colors.purple,
+        color: colors('pink', 0),
         main: {
             tt: ['terrytao', 'Terry Tao'],
         }
@@ -268,7 +301,7 @@ const sources = {
     wiki: c1({
         name: 'Wikipedia',
         url: (w => `https://${w}.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom&language=en`),
-        color: colors.orange,
+        color: colors('orange', 0),
         main: {
             home: ['en.wikipedia', 'Home'],
             potd: ['commons.wikimedia', 'PoTD']
@@ -277,7 +310,7 @@ const sources = {
     csp: c1({
         name: 'C-SPAN',
         url: (w => 'https://feeds.megaphone.fm/' + w),
-        color: colors.white,
+        color: colors('white'),
         main: {
             wtd: ['cspanwashingtontoday', 'Washington Today'],
             csf: ['CSPAN8750886650', 'Ceasefire'],
@@ -287,7 +320,7 @@ const sources = {
     hill: c1({
         name: 'The Hill',
         url: (w => 'https://thehill.com/' + w + '/feed'),
-        color: colors.white,
+        color: colors('cyan', 0),
         main: {
             news: ['homenews', 'News'],
             biz: ['business', 'Business'],
@@ -303,49 +336,49 @@ const sources = {
     onion: new Source(
         'https://theonion.com/feed/',
         "The Onion",
-        colors.purple,
+        colors('violet', 0),
     ),
     scotus: new Source(
         'https://www.scotusblog.com/feed/',
         'SCOTUSblog',
-        colors.white,
+        colors('white'),
     ),
     cs: {
         hn: new Source(
             'https://hnrss.org/frontpage', //'https://news.ycombinator.com/rss',
             'Hacker News',
-            colors.orange,
+            colors('orange', 0),
         ),
         lwn: new Source(
             'https://lwn.net/headlines/newrss',
             'LWN',
-            colors.purple,
+            colors('purple', 0),
         )
     },
     ars: new Source(
         'http://feeds.arstechnica.com/arstechnica/index/',
         'Ars Technica',
-        colors.orange,
+        colors('orange', 0),
     ),
     cfr: new Source(
         'https://www.cfr.org/feed',
         'Council on Foreign Relations',
-        colors.purple,
+        colors('violet', 1),
     ),
     bul: new Source(
         'https://www.thebulwark.com/feed',
         'The Bulwark',
-        colors.purple,
+        colors('violet', 1),
     ),
     cato: new Source(
         'https://www.cato.org/rss/blog',
         'Cato Institute',
-        colors.red,
+        colors('red', 0),
     ),
     btp: new Source(
         'https://news.ballotpedia.org/feed/',
         'BallotPedia',
-        colors.yellow,
+        colors('orange', 1),
     ),
     /*
      * Kill the Newsletter! turns email newsletters into atom feeds.
@@ -357,17 +390,17 @@ const sources = {
         patch: new Source(
             ktn('tuvi8646se065dtrlmcakd7xplfr02yd5kvmtp37'),
             'KtN > Patch',
-            colors.green,
+            colors('green', 0),
         ),
         lcgov: new Source(
             ktn('0xefh9uf7am1nzelvw3t192cminnustw0iofh8nr'),
             'KtN > Cupertino.gov, SanJoseCA.gov',
-            colors.white,
+            colors('white'),
         ),
         tino: c1({
             name: 'Cupertino',
             url: (w => `https://cupertino${w}/feed`),
-            color: colors.blue,
+            color: colors('blue', 0),
             main: {
                 ctd: ['today.com', 'Cupertino Today'],
                 cm: ['matters.org', 'Cupertino Matters'],
@@ -377,7 +410,7 @@ const sources = {
         cities: c1({
             name: 'Nearby',
             url: (w => `https://${w}.com/feed/`),
-            color: colors.green,
+            color: colors('green', 0),
             main: {
                 mv: ['www.mv-voice', 'Mountain View Voice'],
                 sv: ['www.svvoice', 'Silicon Valley Voice'],
@@ -391,7 +424,7 @@ const sources = {
         sj: c1({
             name: 'San Jose',
             url: (w => `https://${w}.com/feed`),
-            color: colors.green,
+            color: colors('green', 0),
             main: {
                 s: ['sanjosespotlight', 'San Jose Spotlight'],
                 i: ['www.sanjoseinside', 'San Jose Inside'],
@@ -400,17 +433,17 @@ const sources = {
         sfgate: new Source(
             'https://www.sfgate.com/rss/feed/Top-News-Stories-595.php',
             'SFGATE',
-            colors.red,
+            colors('red', 0),
         ),
         sfist: new Source(
             'https://sfist.com/rss/',
             'SFist',
-            colors.red,
+            colors('red', 0),
         ),
         cal: c1({
             name: 'CA',
             url: (w => `https://${w}.org/feed/`),
-            color: colors.yellow,
+            color: colors('yellow', 0),
             main: {
                 cm: ['calmatters', 'CalMatters'],
                 kq: ['ww2.kqed', 'KQED'],
@@ -420,7 +453,7 @@ const sources = {
         lao: c1({
             name: 'Legislative Analyst\'s Office',
             url: (w => `https://lao.ca.gov/laoapp/rss/LAORSSFeedNew.aspx?laofeed=${w}`),
-            color: colors.purple,
+            color: colors('purple', 0),
             main: {
                 3: [3, null],
                 4: [4, null],
@@ -442,7 +475,7 @@ const sources = {
     aaas: c1({
         name: 'AAAS / Science.org',
         url: (w => `https://www.science.org/action/showFeed?feed=rss&type=${w}`),
-        color: colors.yellow,
+        color: colors('yellow', 0),
         main: {
             t: ['axatoc&jc=science', 'Main'],
             st: ['etoc&jc=science', 'Science'],
@@ -466,6 +499,11 @@ const sources = {
      *  - decide on *.publishing.oath.com
      *  - decide on *.oath.com
      *  - decide on csp.yahoo.com/beacon/csp
+     *  - add nasdaq, sp_global, maybe cnn finance?
+     *  - https://feeds.finance.yahoo.com/rss/2.0/headline?s=aapl
+     *      change `aapl` to any other ticker. can also be set to `us` to get
+     *      us news
+     *  - CJ Quines. Find website on https://otis.evanchen.cc/yearbook/page/5/
      *
      * Decided against:
      *  - zbMATH is CloudFlare blocked
@@ -483,9 +521,9 @@ const sources = {
 sources.local.sj.sn = new Source(
     ktn('wgly4po8rbojkzhti4z50286va9q0cihiy2ureq5'),
     'KtN > San Jose Spotlight',
-    colors.green,
+    colors('green', 0),
 )
-sources.ebsco.atl.color = colors.blue;
+sources.ebsco.atl.color = colors('blue', 0);
 sources.local.tino.ctd.url = ktn('dim6q9ijcq251c16kvy3zcf1eatjw3a5kf3mow2y');
 sources.local.tino.ctd.name = 'KtN > Cupertino Today';
 var safesl = ((ls, n) => (n < ls.length) ? ls.slice(0, n) : ls)
@@ -495,10 +533,44 @@ sources.nasa.iotd.postproc = limn(1);
 sources.onion.postproc = limn(1);
 sources.wiki.home.postproc = last;
 sources.wiki.potd.postproc = last;
-sources.wsj.opn.color = colors.dred;
+sources.wsj.opn.color = colors('red', 1);
+all(sources.csp).forEach(sc => {
+    sc.postproc = (l => {
+        l.forEach(ret => {
+            ret.piecel = 'https://www.c-span.org/podcasts/subpage/?series='
+                + (s => {
+                    if (s == 'Washington Today')
+                        return 'washingtonToday';
+                    if (s == 'Ceasefire')
+                        return 'ceasefire';
+                    if (s == 'Extreme Mortman')
+                        return 'ExtremeMortman';
+                    throw new Error('You added a C-SPAN podcast without finding the linking series name.');
+                })(sc.name.slice(9)) + '&episode=' + ret.guid;
+        });
+        return l;
+    });
+})
+all(sources.ebsco).forEach(sc => {
+    // Unsure if this whole block is having any effect or not; haven't got a
+    // recent opportunity to test it.
+    var prev = sc.postproc;
+    var nwprc = (l =>
+        l.filter(e => (
+            (e.piece != 'No records found')
+            && (!e.piece.startsWith('Alert Run Date'))
+        ))
+    );
+    if (prev)
+        // Unsure if this actually works:
+        sc.postproc = (l => nwprc(prev(l)));
+    else
+        sc.postproc = nwprc;
+})
 sources.wp.tt.postproc = (l => {
     l.forEach(e => {
-        e.mediap = null;
+        e.media = null;
+        e.mediat = null;
     });
     return l;
 });
@@ -544,16 +616,16 @@ sources.scotus.postproc = (l => {
     return l;
 });
 
-sources.wsj.gravity = GRAV / 2;
+sources.nyt.home.weight *= 4;
 
 const LAYS = {
     pol: new Layout('Politics', [
         new View([
             new Feed('left', [
+                sources.nyt.home,
                 sources.nyt.world,
                 sources.nyt.us,
                 sources.nyt.sunopn,
-                sources.nyt.home,
                 sources.ebsco.atl,
             ]),
             new Feed('center (ish)', [
@@ -762,4 +834,11 @@ const LAYS = {
         ]),
     ]),
 };
-LAYS.fin.postproc = (l => l.map(e => ({ ...e, 'media': (e.mediat == 'img' ? null : e.media) })));
+LAYS.fin.postproc = (l => {
+    l = l.map(e => ({ ...e, 'media': (e.mediat == 'img' ? null : e.media) }));
+    return l;
+});
+LAYS.local.postproc = (l =>
+    l.filter(e => (e.auth != 'CalMatters'))
+);
+
