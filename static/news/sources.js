@@ -1,15 +1,22 @@
 const elem = (e => document.createElement(e));
 const VMAX = 4;
-slice2 = (s, l) => s.slice(0, Math.min(s.length, l));
+slice2 = ((s, l) => {
+    var sl = s.length;
+    s = s.slice(0, Math.min(sl, l));
+    return s;
+});
 clip = (s, l) => {
     var space = elem('div');
     space.innerHTML = s;
     var st = space.textContent;
-    space.textContent = slice2(st, l);
-    var nw = space.innerHTML;
-    if (st.length > l)
-        return nw + '...';
-    return nw;
+    if (st.length < l)
+        return s;
+    st = slice2(st, l);
+    var i = st.lastIndexOf(' ');
+    st = st.slice(0, i);
+    st += '...';
+    space.textContent = st;
+    return space.innerHTML;
 }
 const POSTPROC = (l => {
     l = slice2(l, 50);
