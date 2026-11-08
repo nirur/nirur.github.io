@@ -437,6 +437,11 @@ const sources = {
                 i: ['www.sanjoseinside', 'San Jose Inside'],
             }
         }),
+        merc: new Source(
+            ktn('ynx2dv45575ykrsjkx14000thhlpsmp677vyz36o'),
+            'KtN > Mercury',
+            colors('cyan', 1),
+        ),
         sfgate: new Source(
             'https://www.sfgate.com/rss/feed/Top-News-Stories-595.php',
             'SFGATE',
@@ -817,6 +822,7 @@ const LAYS = {
                 sources.local.sfist,
                 ...all(sources.local.cal),
                 ...all(sources.local.sj),
+                sources.local.merc,
             ]),
             new Feed('nearby',
                 all(sources.local.cities)
@@ -833,6 +839,7 @@ const LAYS = {
                 sources.local.sfist,
                 ...all(sources.local.cal),
                 ...all(sources.local.sj),
+                sources.local.merc,
             ]),
             new Feed('government', [
                 sources.local.lcgov,
