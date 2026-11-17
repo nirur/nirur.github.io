@@ -7,11 +7,7 @@ title: Wall of Text
 </header>
 {% for post in site.posts %}
 <p>
-<em>
-    <a href="{{ post.url }}">
-        {{ post.title }}
-    </a>
-</em>
+<em><a href="{{ post.url }}">{{ post.title }}</a>.</em>
 {{ post.excerpt }}
 </p>
 {% endfor %}
