@@ -121,13 +121,13 @@ html {
     text-align: center;
     margin-top: 1em;
     margin-bottom: 1em;
-    font-size: large;
+    font-size: 1.25em;
 }
 
 .card {
     margin: 8px;
     padding: 16px;
-    font-size: smaller;
+    font-size: calc(5em / 6);
     border-radius: 4px;
     display: block;
 }
@@ -140,7 +140,7 @@ html {
 
 .card .t_h {
     font-weight: bold;
-    font-size: large;
+    font-size: 1.35em;
     margin-bottom: 1em;
 }
 

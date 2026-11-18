@@ -254,7 +254,6 @@ async function coll_feed(feed, ELEM, rules = []) {
             ELEM.appendChild(eof[1]);
             added.push([eof[0], eof[1]]);
             added_ttls.add(eof[2].piece);
-            console.log(added_ttls);
             if (eof[2].tex)
                 texing.push(eof[1]);
         }

@@ -28,13 +28,6 @@
     --top:  var(--primary);
     --card: var(--secondary);
 }
-/*
- * Available fonts:
- * Source Code Pro (sans serif)
- * Audiowide (ugly)
- * Newsreader (most text)
- * Playfair Display (headers)
- */
 
 body {
     margin: 0;
@@ -111,7 +104,6 @@ footer {
 @media (width < 1050px) {
     body {
         flex-direction: column;
-        /*font-size: large;*/
     }
     .navy * {
         text-align: center;

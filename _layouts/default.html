@@ -12,23 +12,30 @@
         </script>
         <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
         <title>{{ page.title }} | nirur</title>
-        <link rel="stylesheet" href="/static/default.css">
+        <link rel="stylesheet" href="/static/css/default.css">
         <script>
             window.onload = (() => {
                 var main = document.querySelector("nav.navy#hd");
                 var i = 1;
-                for (var sec of document.querySelectorAll("#content > h2")) {
+                for (var sec of document.querySelectorAll(
+                    "#content > h1, #content > h2, #content > header"
+                )) {
                     var setid = "sect"+i;
                     sec.id = setid;
                     var link = document.createElement("a");
                     link.href = "#"+setid;
-                    link.textContent = sec.textContent;
+                    if (sec.nodeName == 'HEADER')
+                        link.textContent = 'Top';
+                    else
+                        link.textContent = sec.textContent;
                     link.classList = "hide";
                     main.appendChild(link);
                     i++;
                 }
+                /*
                 if (i>1)
                     main.hidden = false;
+                */
             });
         </script>
         <script>
@@ -42,15 +49,22 @@
         <nav class="navy blanklk" id="mn">
             <span class="hamb" onclick="flip()">&#x2630;</span>
             <a href="/" class="hide">Home</a>
-            <a href="/blog" class="hide">WOT</a>
+            <a href="/blog" class="hide">Writing</a>
             <a href="/pictures" class="hide">Pictures</a>
             <a href="/news" class="hide">News</a>
         </nav>
         <nav class="navy blanklk" id="hd" hidden>
-            <span class="hide">JUMP TO</span>
+            <span class="hide">JUMP</span>
         </nav>
         <div id="main" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column;">
             <div id="content">
+                {% if page.title %}
+                <header>
+                    <h1>
+                        {{ page.title }}
+                    </h1>
+                </header>
+                {% endif %}
                 {{ content }}
             </div>
             <footer style="flex: 1;">
@@ -59,6 +73,9 @@
                 <a href="https://github.com/nirur/nirur.github.io"> GitHub
                 repo</a> for this website.
             </footer>
+            <script>
+                MathJax.typesetPromise(['.mjx']);
+            </script>
         </div>
     </body>
 </html>
