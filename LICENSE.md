@@ -25,9 +25,8 @@ Non-Content Code.
 
 _Attribution_
 
-Any copy, distribution, or publication of this Software must:
-- indicate which portions of this copy, distribution, or publication are
-  derivatives of the Software;
+Any copy, distribution, derivative, or publication of this Software must:
+- indicate which portions of this distribution are, either in original, edited, or derivative form, from the Software;
 - must attribute the author(s) and copyright holder(s) for these portions;
 - and must provide a copy of this license with all substantial portions of this
   software.
