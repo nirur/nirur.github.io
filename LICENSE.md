@@ -26,10 +26,9 @@ Non-Content Code.
 _Attribution_
 
 Any copy, distribution, publication, of this Software or any derivative works (including, but not limited to, revisions, edited versions, portions, or models trained on this Software), must:
-- indicate which portions of this distribution are, either in original, edited, or derivative form, from the Software;
+- indicate which portions of this distribution are, either in original or in derivative form, from this Software;
 - must attribute the author(s) and copyright holder(s) for these portions;
-- and must provide a copy of this license with all substantial portions of this
-  software.
+- and must provide a copy of this license applicable to all substantial portions of this software.
 The sublicensing of any substantial portions of this Software or derivative
 works of this Software may only be conducted with the express permission of the
 author(s) and copyright holder(s).
