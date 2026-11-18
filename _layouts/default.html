@@ -48,11 +48,16 @@
     <body style="display: flex">
         <nav class="navy blanklk" id="mn">
             <span class="hamb" onclick="flip()">&#x2630;</span>
-            <a href="/" class="hide">Home</a>
-            <a href="/blog" class="hide">Writing</a>
-            <a href="/pictures" class="hide">Pictures</a>
-            <a href="/news" class="hide">News</a>
+            <a href="/">Home</a>
+            <a href="/blog">Writing</a>
+            <a href="/pictures">Pictures</a>
+            <a href="/news">News</a>
+            <a href="/feed.xml">Feed</a>
         </nav>
+        <script>
+            for (var e of document.querySelectorAll("#mn > a"))
+                e.classList.add('hide');
+        </script>
         <nav class="navy blanklk" id="hd" hidden>
             <span class="hide">JUMP</span>
         </nav>
