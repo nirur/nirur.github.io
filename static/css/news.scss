@@ -1,0 +1,126 @@
+---
+---
+
+@use 'base';
+@use 'sass:list';
+
+html {
+  overflow-x: hidden;
+}
+
+#chv {
+  display: flex;
+  border-width: 0;
+  border-bottom-width: 4px;
+  border-top-width: 4px;
+  border-color: black;
+  border-style: double none double none;
+  position: sticky;
+  top: 8px;
+  background-color: base.$off-white;
+  z-index: 1;
+}
+
+#nhamb:hover {
+  background-color: dimgray;
+  color: white;
+}
+
+#chv > * {
+  flex: 1;
+  font-family: "Courier Prime", "Menlo";
+  text-align: center;
+  padding: 16px;
+}
+
+#chv *:hover, #vws {
+  background-color: dimgray;
+  color: white;
+}
+
+.vw:hover {
+  text-decoration: underline;
+}
+
+.view {
+  flex-direction: row;
+}
+
+#chv {
+  flex-direction: column;
+  @media (width >= base.$scr-brk) {
+    flex-direction: row;
+  }
+}
+
+@for $n from 1 to 5 {
+  @media (list.nth(base.$scr, $n) <= width < list.nth(base.$scr, 1 + $n)) {
+    .view:not(.scrn#{$n}) {
+      display: none;
+    }
+    .view.scrn#{$n} {
+      display: flex;
+      margin: 0px 8px;
+    }
+  }
+}
+
+#content {
+    padding: 8px !important;
+}
+
+.card img, .card audio {
+    display: block;
+}
+
+.card img {
+    max-height: 250px;
+    max-width: 90%;
+    object-fit: contain;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card audio {
+    width: 100%;
+}
+
+.feed {
+    margin: 4px;
+    min-width: 0;
+}
+
+.feedttl {
+    font-family: "Playfair Display", "Georgia";
+    font-style: italic;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-size: 1.25em;
+}
+
+.card {
+    margin: 8px;
+    padding: 16px;
+    font-size: calc(5em / 6);
+    border-radius: 4px;
+    display: block;
+}
+
+.card:hover, .card:hover *, #vws {
+    background-color: dimgray !important;
+    color: snow;
+    text-decoration: none;
+}
+
+.card .t_h {
+    font-weight: bold;
+    font-size: 1.35em;
+    margin-bottom: 1em;
+}
+
+.card span {
+    display: block;
+}

@@ -58,7 +58,7 @@ function petty_elm(elm) {
 
     var media = gmedia(elm);
     var ret = elem('a');
-    ret.classList = 'card';
+    ret.classList = 'card blanklk';
     ret.style.backgroundColor = elm.color;
     if (elm.piecel)
         ret.href = elm.piecel;
@@ -90,7 +90,7 @@ function petty_elm(elm) {
 }
 function petty_nav(name, sel, ttl) {
     return `
-<a${sel ? ' id="vws"' : ''} class='hide' href='news?page=${name}' >
+<a${sel ? ' id="vws"' : ''} class='hide blanklk' href='news?page=${name}' >
     ${ttl}
 </a>`;
 }

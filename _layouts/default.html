@@ -13,6 +13,8 @@
         <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
         <title>{{ page.title }} | nirur</title>
         <link rel="stylesheet" href="/static/css/default.css">
+        <link rel="icon" type="image/png"
+                         href="/static/icon/fav.png">
         <script>
             window.onload = (() => {
                 var main = document.querySelector("nav.navy#hd");
@@ -28,14 +30,12 @@
                         link.textContent = 'Top';
                     else
                         link.textContent = sec.textContent;
-                    link.classList = "hide";
+                    link.classList = "hide blanklk";
                     main.appendChild(link);
                     i++;
                 }
-                /*
-                if (i>1)
+                if (i>2)
                     main.hidden = false;
-                */
             });
         </script>
         <script>
@@ -48,17 +48,30 @@
     <body style="display: flex">
         <nav class="navy blanklk" id="mn">
             <span class="hamb" onclick="flip()">&#x2630;</span>
-            <a href="/">Home</a>
+            <a href="/" id="tlico">
+                    <style>
+                        #tlico {
+                            width: 10em;
+                            height: 10em;
+                            display: block;
+                            padding: 0;
+                            background-image: url('/static/icon/dark.png');
+                            background-size: 10em;
+                        }
+                        #tlico:hover {
+                            background-image: url('/static/icon/light.png');
+                        }
+                    </style>
+            </a>
             <a href="/blog">Writing</a>
             <a href="/pictures">Pictures</a>
             <a href="/news">News</a>
-            <a href="/feed.xml">Feed</a>
         </nav>
         <script>
             for (var e of document.querySelectorAll("#mn > a"))
                 e.classList.add('hide');
         </script>
-        <nav class="navy blanklk" id="hd" hidden>
+        <nav class="navy" id="hd" hidden>
             <span class="hide">JUMP</span>
         </nav>
         <div id="main" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column;">

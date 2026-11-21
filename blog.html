@@ -2,6 +2,11 @@
 layout: default
 title: Wall of Text
 ---
+
+<p>
+You can subscribe to this blog via <a href="/feed.xml">Atom feed</a>.
+</p>
+
 {% for post in site.posts %}
 <a href="{{ post.url }}"><em>{{ post.title }}</em></a>,
 {{ post.date | date: "%d %B %Y" }}.
