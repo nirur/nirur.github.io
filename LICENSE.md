@@ -1,8 +1,10 @@
 Inspired by the MIT License and Creative Commons licenses.
 
+# COPYRIGHT
+
 Copyright (c) Niranjan Rao.
 
-    DEFINITIONS
+# DEFINITIONS
 
 The term "Materials" is used to refer to any copy of this software and
 associated documentation files.
@@ -33,7 +35,7 @@ considered a derivative work of the Content Code; and any model whose
 development process incorporates a substantial portion of Non-Content Code is
 considered a derivative work of the Non-Content Code.
 
-    ATTRIBUTION
+# ATTRIBUTION
 
 Any copy, distribution, publication, of this Software or any derivative works
 (including, but not limited to, revisions, edited versions, portions, or models
@@ -46,7 +48,7 @@ trained on this Software), must:
   this Software or derivative works of this Software may only be conducted with
   the express permission of the author(s) and copyright holder(s).
 
-    PERMISSIONS AND RESTRICTIONS
+# PERMISSIONS AND RESTRICTIONS
 
 All permissions granted below are free of charge; the exercise of any
 permission(s) below must accord with the attribution requirements above.
@@ -66,7 +68,7 @@ substantial portion thereof) to modify, edit, or produce derivative works for
 personal use only, provided these derivative works will not be distributed or
 published under any circumstances.
 
-    SPECIALLY LICENSED MATERIALS
+# SPECIALLY LICENSED MATERIALS
 
 Portions of these Materials have different licensing requirements than the
 Software. Information on these is given in the table below.
@@ -85,7 +87,7 @@ Software. Information on these is given in the table below.
   and some transformations. The code for many of these changes can be found in
   the directory `static/icon/wm`. |
 
-    WARRANTY
+# WARRANTY
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
