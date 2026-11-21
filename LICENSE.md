@@ -74,7 +74,7 @@ Portions of these Materials have different licensing requirements than the
 Software. Information on these is given in the table below.
 
 | Files | License(s) | Information |
----
+| --- | --- | --- |
 | Images (files ending with `.png`, `.jpg`, or `.xcf`) in the directory
   `static/icon/` and the subdirectory `static/icon/wm`. In particular, the
   favicon for this site. |
