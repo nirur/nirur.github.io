@@ -92,7 +92,8 @@ Software. Information on these is given in the table below.
             BY-SA 3.0</a></td>
             <td>Images in this directory are either copies or derivatives of
             <a target="_blank"
-            href="https://commons.wikimedia.org/wiki/File:India_-_Varanasi_street_workshop_-_1467.jpg">an
+href="https://commons.wikimedia.org/wiki/File:India_-_Varanasi_street_workshop_-_1467.jpg"
+            >an
             image on Wikimedia</a>
             (linked), posted by <a target="_blank"
             href="https://www.royan.com.ar/">Jorge Royan</a>. Derivative
