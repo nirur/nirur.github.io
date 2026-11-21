@@ -99,6 +99,8 @@ Software. Information on these is given in the table below.
             grayscale, and some transformations. The code for many of these
             changes can be found in the directory
             <code>static/icon/wm</code>.</td>
+        </tr>
+    </tbody>
 </table>
 
 # WARRANTY
