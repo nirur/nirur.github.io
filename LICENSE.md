@@ -83,18 +83,23 @@ Software. Information on these is given in the table below.
     </thead>
     <tbody>
         <tr>
-            <td>Images (files ending with `.png`, `.jpg`, or `.xcf`) in the
-            directory `static/icon/` and the subdirectory `static/icon/wm`. In
-            particular, the favicon for this site.</td>
-            <td>Creative Commons [CC BY-SA
-            3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.en)</td>
+            <td>Images (files ending with <code>.png</code>, <code>.jpg</code>,
+            or <code>.xcf</code>) in the directory <code>static/icon/</code>
+            and the subdirectory <code>static/icon/wm</code>. In particular,
+            the favicon for this site.</td>
+            <td>Creative Commons <a target="_blank"
+            href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">CC
+            BY-SA 3.0</a></td>
             <td>Images in this directory are either copies or derivatives of
-            [an image on
-            Wikimedia](https://commons.wikimedia.org/wiki/File:India_-_Varanasi_street_workshop_-_1467.jpg)
-            (linked), posted by [Jorge Royan](https://www.royan.com.ar/).
-            Derivative versions were made by cutting out the man in the photo,
-            applying grayscale, and some transformations. The code for many of
-            these changes can be found in the directory `static/icon/wm`.</td>
+            <a target="_blank"
+            href="https://commons.wikimedia.org/wiki/File:India_-_Varanasi_street_workshop_-_1467.jpg">an
+            image on Wikimedia</a>
+            (linked), posted by <a target="_blank"
+            href="https://www.royan.com.ar/">Jorge Royan</a>. Derivative
+            versions were made by cutting out the man in the photo, applying
+            grayscale, and some transformations. The code for many of these
+            changes can be found in the directory
+            <code>static/icon/wm</code>.</td>
 </table>
 
 # WARRANTY
