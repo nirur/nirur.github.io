@@ -42,11 +42,13 @@ a {
 
 #mn {
   background-color: base.$primary-dark;
+  //background-image: url('/static/icon/dark.png');
   * {
     color: base.$bright-white;
   }
   a:hover, .hamb:hover {
-    background-color: base.$primary;
+    //background-color: base.$primary;
+    background-image: url('/static/icon/light.png');
   }
 }
 
