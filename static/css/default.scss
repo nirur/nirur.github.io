@@ -46,8 +46,9 @@ a {
     color: base.$bright-white;
   }
   a:hover, .hamb:hover {
-    //background-color: base.$primary;
-    background-image: url('/static/icon/light.png');
+    background-color: base.$primary;
+    //background-image: url('/static/icon/light.png');
+    //background-size: 400px;
   }
 }
 
